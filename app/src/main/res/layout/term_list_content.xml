@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:padding="4dp"
+    >
+
+    <ImageView
+        android:id="@+id/imageDocIcon"
+        android:layout_width="@dimen/icon_width"
+        android:layout_height="@dimen/icon_hight"
+        android:src="@drawable/ic_document" />
+
+
+    <TextView
+        android:id="@+id/tvTerm"
+        android:layout_width="264dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/imageDocIcon"
+        android:layout_marginBottom="@dimen/text_view_margin"
+        android:layout_marginEnd="@dimen/text_view_margin"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="@dimen/text_view_margin"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="@dimen/text_view_margin"
+        android:gravity="top"
+        android:singleLine="true"
+        android:text=""
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/text_size_md" />
+
+    <TextView
+        android:id="@+id/start_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageDocIcon"
+        android:layout_marginBottom="@dimen/text_view_margin"
+        android:layout_marginEnd="@dimen/text_view_margin"
+        android:layout_marginLeft="@dimen/text_view_margin"
+        android:layout_marginRight="@dimen/text_view_margin"
+        android:layout_marginStart="@dimen/text_view_margin"
+        android:layout_marginTop="@dimen/text_view_margin"
+        android:text="@string/start_date"
+        android:textColor="@color/colorPrimaryDark"
+        android:textIsSelectable="false"
+        android:textSize="@dimen/text_size_md" />
+
+    <TextView
+        android:id="@+id/term_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/start_date"
+        android:layout_below="@id/tvTerm"
+        android:layout_marginBottom="@dimen/text_view_margin"
+        android:layout_marginEnd="@dimen/text_view_margin"
+        android:layout_marginLeft="@dimen/text_view_margin"
+        android:layout_marginRight="@dimen/text_view_margin"
+        android:layout_marginStart="@dimen/text_view_margin"
+        android:layout_marginTop="@dimen/text_view_margin"
+        android:text="Jun/12/18"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/text_size_md"/>
+
+    <TextView
+        android:id="@+id/end_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/term_start"
+        android:layout_below="@+id/tvTerm"
+        android:layout_marginBottom="@dimen/text_view_margin"
+        android:layout_marginEnd="@dimen/text_view_margin"
+        android:layout_marginLeft="@dimen/text_view_margin"
+        android:layout_marginRight="@dimen/text_view_margin"
+        android:layout_marginStart="@dimen/text_view_margin"
+        android:layout_marginTop="@dimen/text_view_margin"
+        android:text="End date:"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/text_size_md" />
+
+    <TextView
+        android:id="@+id/term_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/end_date"
+        android:layout_below="@id/tvTerm"
+        android:layout_marginBottom="@dimen/text_view_margin"
+        android:layout_marginEnd="@dimen/text_view_margin"
+        android:layout_marginLeft="@dimen/text_view_margin"
+        android:layout_marginRight="@dimen/text_view_margin"
+        android:layout_marginStart="@dimen/text_view_margin"
+        android:layout_marginTop="@dimen/text_view_margin"
+        android:text="10/12/18"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/text_size_md" />
+
+</RelativeLayout>
