@@ -1,143 +1,162 @@
 package com.example.mobileapplicationdevelopment;
 
-import android.content.Context;
+import android.app.AlertDialog;
+import android.app.LoaderManager;
+import android.content.ContentValues;
+import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.LayoutInflater;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.Toast;
 
-import android.support.v7.app.ActionBar;
-import android.widget.TextView;
 
-
-import com.example.mobileapplicationdevelopment.dummy.DummyContent;
-
-import java.util.List;
-
-/**
- * An activity representing a list of Terms. This activity
- * has different presentations for handset and tablet-size devices. On
- * handsets, the activity presents a list of items, which when touched,
- * lead to a {@link TermDetailActivity} representing
- * item details. On tablets, the activity presents the list of items and
- * item details side-by-side using two vertical panes.
- */
-public class TermListActivity extends AppCompatActivity {
-
-    /**
-     * Whether or not the activity is in two-pane mode, i.e. running on a tablet
-     * device.
-     */
-    private boolean mTwoPane;
+public class TermListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+    private TermCursorAdapter cursorAdapter;
+    private static final int TERM_REQUEST_CODE = 1001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_term_list);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_term_list_toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setTitle(getTitle());
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        cursorAdapter = new TermCursorAdapter(this, null, 0);
+
+        //todo get the mainActivity to display current term
+        //todo add start date and end date to the display
+
+        ListView list = (ListView) findViewById(R.id.activity_term_detail_list);
+
+            list.setAdapter(cursorAdapter);
+
+            Log.d("ListVeiw", "Error with cursorAdapter");
+            Toast.makeText(TermListActivity.this,
+                    "There is no terms created", Toast.LENGTH_SHORT).show();
+
+
+        getLoaderManager().initLoader(0, null, this);
+
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(TermListActivity.this, TermCourseActivity.class);
+                Uri uri = Uri.parse(ObjectViewProvider.CONTENT_URI + "/" + id);
+                intent.putExtra(ObjectViewProvider.CONTENT_ITEM_TYPE, uri);
+                startActivityForResult(intent, TERM_REQUEST_CODE);
+                //todo when the item is clicked term detail will open with courses
             }
         });
 
-        if (findViewById(R.id.term_detail_container) != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
-            mTwoPane = true;
-        }
 
-        View recyclerView = findViewById(R.id.term_list);
-        assert recyclerView != null;
-        setupRecyclerView((RecyclerView) recyclerView);
+    }
+    //fixme this may be were the error occors
+    private void insertTerm(String termText) {
+
+        ContentValues values = new ContentValues();
+        values.put(DBOpenHelper.TERM_NAME, termText);
+        Uri termUri = getContentResolver().insert(ObjectViewProvider.CONTENT_URI, values);
+
     }
 
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, DummyContent.ITEMS, mTwoPane));
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
     }
 
-    public static class SimpleItemRecyclerViewAdapter
-            extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
 
-        private final TermListActivity mParentActivity;
-        private final List<DummyContent.DummyItem> mValues;
-        private final boolean mTwoPane;
-        private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DummyContent.DummyItem item = (DummyContent.DummyItem) view.getTag();
-                if (mTwoPane) {
-                    Bundle arguments = new Bundle();
-                    arguments.putString(TermDetailFragment.ARG_ITEM_ID, item.id);
-                    TermDetailFragment fragment = new TermDetailFragment();
-                    fragment.setArguments(arguments);
-                    mParentActivity.getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.term_detail_container, fragment)
-                            .commit();
-                } else {
-                    Context context = view.getContext();
-                    Intent intent = new Intent(context, TermDetailActivity.class);
-                    intent.putExtra(TermDetailFragment.ARG_ITEM_ID, item.id);
-
-                    context.startActivity(intent);
-                }
-            }
-        };
-
-        SimpleItemRecyclerViewAdapter(TermListActivity parent,
-                                      List<DummyContent.DummyItem> items,
-                                      boolean twoPane) {
-            mValues = items;
-            mParentActivity = parent;
-            mTwoPane = twoPane;
+        switch (id){
+            case R.id.action_add_term:
+                insertSampleData();
+                break;
+            case R.id.action_delete_term:
+                deleteAll();
+                break;
         }
 
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.term_list_content, parent, false);
-            return new ViewHolder(view);
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void deleteAll() {
+        DialogInterface.OnClickListener dialogClickListener =
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int button) {
+                        if (button == DialogInterface.BUTTON_POSITIVE) {
+                            //db management
+                            getContentResolver().delete(ObjectViewProvider.CONTENT_URI, null, null);
+
+                            restartLoader();
+                            Toast.makeText(TermListActivity.this,
+                                    getString(R.string.all_deleted),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getString(R.string.are_you_sure))
+                .setPositiveButton(getString(android.R.string.yes), dialogClickListener)
+                .setNegativeButton(getString(android.R.string.no), dialogClickListener)
+                .show();
+    }
+
+    private void insertSampleData() {
+        insertTerm("Simple note");
+        insertTerm("Multi line \nnote");
+        insertTerm("Very long note with a lot of text that exceeds the width of the screen by a lot link its so " +
+                "far \nits really amazing how long the note is");
+        restartLoader();
+    }
+
+    private void restartLoader() {
+        getLoaderManager().restartLoader(0, null, this);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(this, ObjectViewProvider.CONTENT_URI, null, null,
+                null, null
+        );
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        cursorAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        cursorAdapter.swapCursor(null);
+    }
+
+    public void openAddTerm(View view) {
+        Intent intent = new Intent(this, AddTermActivity.class);
+        startActivityForResult(intent, TERM_REQUEST_CODE);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        if(requestCode == TERM_REQUEST_CODE && resultCode == RESULT_OK) {
+            restartLoader();
         }
 
-        @Override
-        public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.mIdView.setText(mValues.get(position).id);
-            holder.mContentView.setText(mValues.get(position).content);
-
-            holder.itemView.setTag(mValues.get(position));
-            holder.itemView.setOnClickListener(mOnClickListener);
-        }
-
-        @Override
-        public int getItemCount() {
-            return mValues.size();
-        }
-
-        class ViewHolder extends RecyclerView.ViewHolder {
-            final TextView mIdView;
-            final TextView mContentView;
-
-            ViewHolder(View view) {
-                super(view);
-                mIdView = (TextView) view.findViewById(R.id.term_start);
-                mContentView = (TextView) view.findViewById(R.id.term_end);
-            }
-        }
     }
 }

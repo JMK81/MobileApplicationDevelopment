@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:padding="4dp"
-    >
+    android:padding="8dp">
 
     <ImageView
         android:id="@+id/imageDocIcon"
@@ -16,14 +15,14 @@
     <TextView
         android:id="@+id/tvTerm"
         android:layout_width="264dp"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/imageDocIcon"
+        android:layout_height="28dp"
         android:layout_marginBottom="@dimen/text_view_margin"
         android:layout_marginEnd="@dimen/text_view_margin"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="@dimen/text_view_margin"
         android:layout_marginStart="16dp"
         android:layout_marginTop="@dimen/text_view_margin"
+        android:layout_toRightOf="@+id/imageDocIcon"
         android:gravity="top"
         android:singleLine="true"
         android:text=""

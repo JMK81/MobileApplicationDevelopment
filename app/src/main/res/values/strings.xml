@@ -2,4 +2,17 @@
     <string name="app_name">MobileApplicationDevelopment</string>
     <string name="title_term_detail">Term Detail</string>
     <string name="start_date">Start Date:</string>
+    <string name="all_deleted">All items have been deleted!</string>
+    <string name="are_you_sure">Are you sure you would like to delete data</string>
+    <string name="title_activity_add_assessment">AddAssessment</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_course_add">CourseAddActivity</string>
+    <string name="title_activity_course_detail">CourseDetailActivity</string>
+    <string name="title_activity_mentor_add">MentorAddActivity</string>
+    <string name="title_activity_assessment_add">AssessmentAddActivity</string>
+    <string name="title_activity_note_add">NoteAddActivity</string>
+    <string name="title_activity_term_add">TermAddActivity</string>
+    <string name="title_activity_mentor_detail">MentorDetail</string>
+    <string name="title_activity_assessments_detail">AssessmentsDetailActivity</string>
+    <string name="title_activity_note_detail">NoteDetailActivity</string>
 </resources>

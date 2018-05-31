@@ -33,7 +33,9 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="outputName" value="ic_document" />
+                                      <entry key="assetType" value="IMAGE" />
+                                      <entry key="imageAsset" value="$USER_HOME$/Desktop/NoteTakingApp/Assets/drawable/drawable-mdpi/ic_action_add.png" />
+                                      <entry key="outputName" value="ic_document_add" />
                                     </map>
                                   </option>
                                 </PersistentState>

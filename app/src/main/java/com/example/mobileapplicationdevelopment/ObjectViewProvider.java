@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,7 +13,9 @@ import android.util.Log;
 
 public class ObjectViewProvider extends ContentProvider {
 
-    private static final String AUTHORITY = "com.example.c196androidapp.objectviewprovider";
+    private SQLiteOpenHelper dbHelper;
+
+    private static final String AUTHORITY = "com.example.mobileapplicationdevelopment.objectviewprovider";
     private static final String BASE_PATH = "term";
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH );
 
@@ -45,13 +48,16 @@ public class ObjectViewProvider extends ContentProvider {
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection,
                         @Nullable String[] selectionArgs, @Nullable String sortOrder) {
+      //TODO  NEED TO MAKE IF STATEMENT TO CHECK WHAT TABLE IS BEING REQUESTED
         if(uriMatcher.match(uri) == TERM_ID){
             selection = DBOpenHelper.TERM_ID + "=" + uri.getLastPathSegment();
         }
         return database.query(DBOpenHelper.TABLE_TERM, DBOpenHelper.ALL_TERM_COLUMNS, selection,
                 null, null, null, DBOpenHelper.TERM_START + " DESC"
         );
+
     }
+
 
     @Nullable
     @Override

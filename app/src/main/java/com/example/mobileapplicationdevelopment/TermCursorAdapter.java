@@ -19,15 +19,15 @@ public class TermCursorAdapter extends CursorAdapter {
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        return LayoutInflater.from(context).inflate(R.layout.term_list, parent, false);
+        return LayoutInflater.from(context).inflate(R.layout.term_list_content, parent, false);
     }
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        //todo need to add multible feilds
-        //fixme!! bound to conten_main.xml
+        //todo need to add multible feilds check the context switch between tables
 
-        String termName = cursor.getString(cursor.getColumnIndex(DBOpenHelper.TERM_NANE));
+
+        String termName = cursor.getString(cursor.getColumnIndex(DBOpenHelper.TERM_NAME));
         String termStart = cursor.getString(cursor.getColumnIndex(DBOpenHelper.TERM_START));
         String termEnd = cursor.getString(cursor.getColumnIndex(DBOpenHelper.TERM_END));
         //String termNote = cursor.getString(cursor.getColumnIndex(DBOpenHelper.TERM_NOTES));
@@ -46,8 +46,8 @@ public class TermCursorAdapter extends CursorAdapter {
             sd.setText(termStart);
             TextView ed = (TextView) view.findViewById(R.id.term_end);
             ed.setText(termEnd);
-        }catch (Exception e){
-            Log.d("TermCusronAdapter", e.toString()+ "Binding view");
+        } catch (Exception e) {
+            Log.d("TermCusronAdapter", e.toString() + "Binding view");
         }
 
     }
