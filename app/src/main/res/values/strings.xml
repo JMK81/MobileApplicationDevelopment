@@ -15,4 +15,10 @@
     <string name="title_activity_mentor_detail">MentorDetail</string>
     <string name="title_activity_assessments_detail">AssessmentsDetailActivity</string>
     <string name="title_activity_note_detail">NoteDetailActivity</string>
+    <string name="title_activity_add">AddActivity</string>
+    <string name="title_activity_detail">DetailActivity</string>
+    <string name="title_activity_edit">EditActivity</string>
+    <string name="title_activity_view">ViewActivity</string>
+    <string name="title_activity_editor">EditorActivity</string>
+    <string name="action_delete">Delete</string>
 </resources>

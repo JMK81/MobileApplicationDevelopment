@@ -19,17 +19,22 @@ import android.widget.TextView;
  * item details are presented side-by-side with a list of items
  * in a {@link TermListActivity}.
  */
-public class TermCourseActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class TermDetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private String action;
 
     private TextView termName;
     private TextView termStart;
     private TextView termEnd;
+    private TextView Note;
+
+
     private String termFilter;
 
     private TermCursorAdapter cursorAdapter;
     private static final int TERM_REQUEST_CODE = 1001;
+
+
 
     //todo list will display courses in the appbar it needs to display the term title start and end dates
     /*
@@ -41,7 +46,7 @@ public class TermCourseActivity extends AppCompatActivity implements LoaderManag
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_term_detail);
-        //todo update activity_term_detail
+        //todo all add and edit function throught the same activity
         termName = (TextView) findViewById(R.id.course_detail_name);
         termStart = (TextView) findViewById(R.id.activity_course_detail_start);
         termEnd = (TextView) findViewById(R.id.activity_course_detail_end);
@@ -49,16 +54,16 @@ public class TermCourseActivity extends AppCompatActivity implements LoaderManag
         Intent intent = getIntent();
 
         Uri uri = intent.getParcelableExtra(ObjectViewProvider.CONTENT_ITEM_TYPE);
-
-        Cursor cursor = getContentResolver().query(uri, DBOpenHelper.ALL_TERM_COLUMNS, termFilter,
+    //
+        Cursor cursor = getContentResolver().query(uri, DBOpenHelper.ALL_COURSE_COLLUMS, termFilter,
                 null, null);
         cursor.moveToFirst();
 
         termFilter = DBOpenHelper.TERM_ID + "=" + uri.getLastPathSegment();
 
-        termName.setText(cursor.getString(cursor.getColumnIndex(DBOpenHelper.TERM_NAME)));
-        termStart.setText(cursor.getString(cursor.getColumnIndex(DBOpenHelper.TERM_START)));
-        termEnd.setText(cursor.getString(cursor.getColumnIndex(DBOpenHelper.TERM_END)));
+        termName.setText(cursor.getString(cursor.getColumnIndex(DBOpenHelper.COURSE_TEXT)));
+        termStart.setText(cursor.getString(cursor.getColumnIndex(DBOpenHelper.COURSE__START)));
+        termEnd.setText(cursor.getString(cursor.getColumnIndex(DBOpenHelper.COURSE_END)));
 
         cursorAdapter = new TermCursorAdapter(this, null, 0);
 
@@ -71,7 +76,7 @@ public class TermCourseActivity extends AppCompatActivity implements LoaderManag
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(TermCourseActivity.this, CourseDetailActivity.class);
+                Intent intent = new Intent(TermDetailActivity.this, DetailActivity.class);
                 Uri uri = Uri.parse(ObjectViewProvider.CONTENT_URI + "/" + id);
                 intent.putExtra(ObjectViewProvider.CONTENT_ITEM_TYPE, uri);
                 startActivityForResult(intent, TERM_REQUEST_CODE);
@@ -104,8 +109,9 @@ public class TermCourseActivity extends AppCompatActivity implements LoaderManag
     }
 
     public void openAddTerm(View view) {
-//        Intent intent = new Intent(this, CourseDetailActivity.class);
-//        startActivityForResult(intent, TERM_REQUEST_CODE);
+        Intent intent = new Intent(this, AddActivity.class);
+        //use this to
+        startActivityForResult(intent, TERM_REQUEST_CODE);
     }
 
     @Override

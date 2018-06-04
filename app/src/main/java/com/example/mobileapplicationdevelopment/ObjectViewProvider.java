@@ -48,10 +48,16 @@ public class ObjectViewProvider extends ContentProvider {
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection,
                         @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-      //TODO  NEED TO MAKE IF STATEMENT TO CHECK WHAT TABLE IS BEING REQUESTED
+      //where clause using the uri that is pass to the method
+        if(uriMatcher.match(uri) == TERM_ID){
+            //returns the numeric value of the primary key with in the term table
+            selection = DBOpenHelper.TERM_ID + " = " + uri.getLastPathSegment();
+        }
+
         if(uriMatcher.match(uri) == TERM_ID){
             selection = DBOpenHelper.TERM_ID + "=" + uri.getLastPathSegment();
         }
+        //todo more conditions for finding the course PK, assessments pk, notes, and reminders
         return database.query(DBOpenHelper.TABLE_TERM, DBOpenHelper.ALL_TERM_COLUMNS, selection,
                 null, null, null, DBOpenHelper.TERM_START + " DESC"
         );
@@ -81,7 +87,7 @@ public class ObjectViewProvider extends ContentProvider {
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return database.update(DBOpenHelper.TABLE_NOTES, values, selection, selectionArgs);
+        return database.update(DBOpenHelper.TABLE_TERM, values, selection, selectionArgs);
     }
 }
 

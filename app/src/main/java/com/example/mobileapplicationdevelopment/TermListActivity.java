@@ -25,27 +25,25 @@ public class TermListActivity extends AppCompatActivity implements LoaderManager
     private TermCursorAdapter cursorAdapter;
     private static final int TERM_REQUEST_CODE = 1001;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_term_list);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_term_list_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.view_toolbar);
         setSupportActionBar(toolbar);
-
+       //need a Cursor addapter constant title
         cursorAdapter = new TermCursorAdapter(this, null, 0);
 
         //todo get the mainActivity to display current term
         //todo add start date and end date to the display
 
-        ListView list = (ListView) findViewById(R.id.activity_term_detail_list);
+        ListView list = (ListView) findViewById(R.id.view_list);
 
-            list.setAdapter(cursorAdapter);
+        list.setAdapter(cursorAdapter);
 
-            Log.d("ListVeiw", "Error with cursorAdapter");
-            Toast.makeText(TermListActivity.this,
-                    "There is no terms created", Toast.LENGTH_SHORT).show();
-
+        insertSampleData();
 
         getLoaderManager().initLoader(0, null, this);
 
@@ -53,21 +51,30 @@ public class TermListActivity extends AppCompatActivity implements LoaderManager
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(TermListActivity.this, TermCourseActivity.class);
+                //on click take the item click and reset the cusor adapter to view in
+                //termListActivity content id and search the db for items that have
+                Intent intent = new Intent(TermListActivity.this,EditorActivity.class);
                 Uri uri = Uri.parse(ObjectViewProvider.CONTENT_URI + "/" + id);
                 intent.putExtra(ObjectViewProvider.CONTENT_ITEM_TYPE, uri);
                 startActivityForResult(intent, TERM_REQUEST_CODE);
                 //todo when the item is clicked term detail will open with courses
             }
         });
+    }
 
+    public void actionAdd(MenuItem item) {
+        Intent intent = new Intent(this, EditorActivity.class);
+        startActivityForResult(intent, TERM_REQUEST_CODE);
+        Log.d("actionAddTerm", "test =--->");
 
     }
-    //fixme this may be were the error occors
+
+    //fixme this may be weare the error occurs
     private void insertTerm(String termText) {
 
         ContentValues values = new ContentValues();
         values.put(DBOpenHelper.TERM_NAME, termText);
+
         Uri termUri = getContentResolver().insert(ObjectViewProvider.CONTENT_URI, values);
 
     }
@@ -75,7 +82,7 @@ public class TermListActivity extends AppCompatActivity implements LoaderManager
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_trem_list, menu);
         return true;
     }
 
@@ -84,12 +91,10 @@ public class TermListActivity extends AppCompatActivity implements LoaderManager
         int id = item.getItemId();
 
         switch (id){
-            case R.id.action_add_term:
-                insertSampleData();
+            case R.id.action_add:
+                actionAdd(item);
                 break;
-            case R.id.action_delete_term:
-                deleteAll();
-                break;
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -128,6 +133,7 @@ public class TermListActivity extends AppCompatActivity implements LoaderManager
     }
 
     private void restartLoader() {
+
         getLoaderManager().restartLoader(0, null, this);
     }
 
@@ -145,18 +151,20 @@ public class TermListActivity extends AppCompatActivity implements LoaderManager
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+
         cursorAdapter.swapCursor(null);
     }
 
-    public void openAddTerm(View view) {
-        Intent intent = new Intent(this, AddTermActivity.class);
-        startActivityForResult(intent, TERM_REQUEST_CODE);
-    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         if(requestCode == TERM_REQUEST_CODE && resultCode == RESULT_OK) {
             restartLoader();
         }
+
+    }
+    public void openEditorForNewNote(View view) {
+        Intent intent = new Intent(this, EditorActivity.class);
+        startActivityForResult(intent, TERM_REQUEST_CODE);
 
     }
 }

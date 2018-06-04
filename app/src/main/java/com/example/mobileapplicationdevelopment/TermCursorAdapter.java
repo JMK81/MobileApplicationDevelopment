@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 public class TermCursorAdapter extends CursorAdapter {
     public TermCursorAdapter(Context context, Cursor c, int flags) {
+
         super(context, c, flags);
     }
     //todo add current term modification
@@ -26,7 +27,7 @@ public class TermCursorAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         //todo need to add multible feilds check the context switch between tables
 
-
+        String termId   = cursor.getColumnName(cursor.getColumnIndex(DBOpenHelper.TERM_ID));
         String termName = cursor.getString(cursor.getColumnIndex(DBOpenHelper.TERM_NAME));
         String termStart = cursor.getString(cursor.getColumnIndex(DBOpenHelper.TERM_START));
         String termEnd = cursor.getString(cursor.getColumnIndex(DBOpenHelper.TERM_END));
