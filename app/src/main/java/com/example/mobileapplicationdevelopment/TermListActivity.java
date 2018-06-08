@@ -33,17 +33,12 @@ public class TermListActivity extends AppCompatActivity implements LoaderManager
         setContentView(R.layout.activity_term_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.view_toolbar);
         setSupportActionBar(toolbar);
-       //need a Cursor addapter constant title
+       //need a Cursor adapter constant title
         cursorAdapter = new TermCursorAdapter(this, null, 0);
-
-        //todo get the mainActivity to display current term
-        //todo add start date and end date to the display
 
         ListView list = (ListView) findViewById(R.id.view_list);
 
         list.setAdapter(cursorAdapter);
-
-        insertSampleData();
 
         getLoaderManager().initLoader(0, null, this);
 
@@ -53,9 +48,9 @@ public class TermListActivity extends AppCompatActivity implements LoaderManager
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //on click take the item click and reset the cusor adapter to view in
                 //termListActivity content id and search the db for items that have
-                Intent intent = new Intent(TermListActivity.this,EditorActivity.class);
+                Intent intent = new Intent(TermListActivity.this,TermDetailActivity.class);
                 Uri uri = Uri.parse(ObjectViewProvider.CONTENT_URI + "/" + id);
-                intent.putExtra(ObjectViewProvider.CONTENT_ITEM_TYPE, uri);
+                intent.putExtra(ObjectViewProvider.TERM_CONTENT_TYPE, uri);
                 startActivityForResult(intent, TERM_REQUEST_CODE);
                 //todo when the item is clicked term detail will open with courses
             }
@@ -63,13 +58,13 @@ public class TermListActivity extends AppCompatActivity implements LoaderManager
     }
 
     public void actionAdd(MenuItem item) {
-        Intent intent = new Intent(this, EditorActivity.class);
+        Intent intent = new Intent(TermListActivity.this, EditorActivity.class);
         startActivityForResult(intent, TERM_REQUEST_CODE);
         Log.d("actionAddTerm", "test =--->");
 
     }
 
-    //fixme this may be weare the error occurs
+
     private void insertTerm(String termText) {
 
         ContentValues values = new ContentValues();
@@ -90,7 +85,7 @@ public class TermListActivity extends AppCompatActivity implements LoaderManager
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        switch (id){
+        switch (id) {
             case R.id.action_add:
                 actionAdd(item);
                 break;
@@ -98,38 +93,6 @@ public class TermListActivity extends AppCompatActivity implements LoaderManager
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private void deleteAll() {
-        DialogInterface.OnClickListener dialogClickListener =
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int button) {
-                        if (button == DialogInterface.BUTTON_POSITIVE) {
-                            //db management
-                            getContentResolver().delete(ObjectViewProvider.CONTENT_URI, null, null);
-
-                            restartLoader();
-                            Toast.makeText(TermListActivity.this,
-                                    getString(R.string.all_deleted),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                };
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(getString(R.string.are_you_sure))
-                .setPositiveButton(getString(android.R.string.yes), dialogClickListener)
-                .setNegativeButton(getString(android.R.string.no), dialogClickListener)
-                .show();
-    }
-
-    private void insertSampleData() {
-        insertTerm("Simple note");
-        insertTerm("Multi line \nnote");
-        insertTerm("Very long note with a lot of text that exceeds the width of the screen by a lot link its so " +
-                "far \nits really amazing how long the note is");
-        restartLoader();
     }
 
     private void restartLoader() {
@@ -162,6 +125,7 @@ public class TermListActivity extends AppCompatActivity implements LoaderManager
         }
 
     }
+    //FIXME SEE IF THIS METHOD IS USED!!
     public void openEditorForNewNote(View view) {
         Intent intent = new Intent(this, EditorActivity.class);
         startActivityForResult(intent, TERM_REQUEST_CODE);

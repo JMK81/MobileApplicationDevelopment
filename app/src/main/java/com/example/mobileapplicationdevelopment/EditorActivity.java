@@ -44,7 +44,7 @@ public class EditorActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        Uri uri = intent.getParcelableExtra(ObjectViewProvider.CONTENT_ITEM_TYPE);
+        Uri uri = intent.getParcelableExtra(ObjectViewProvider.TERM_CONTENT_TYPE);
 
         if(uri == null){
             action = Intent.ACTION_INSERT;
@@ -66,7 +66,7 @@ public class EditorActivity extends AppCompatActivity {
             editStart.setText(oldStart);
             editEnd.setText(oldEnd);
         }
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -75,7 +75,7 @@ public class EditorActivity extends AppCompatActivity {
             }
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
+    */}
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         if(action.equals(Intent.ACTION_EDIT)){
@@ -109,12 +109,13 @@ public class EditorActivity extends AppCompatActivity {
                             //db management
                             getContentResolver().delete(ObjectViewProvider.CONTENT_URI, termFilter, null);
                             setResult(RESULT_OK);
+                            finish();
 
                             Toast.makeText(EditorActivity.this,
-                                    getString(R.string.all_deleted),
+                                    getString(R.string.delete),
                                     Toast.LENGTH_SHORT).show();
                         }else if(button == DialogInterface.BUTTON_NEGATIVE){
-                            setResult(RESULT_CANCELED);
+
                             }
 
                     }
@@ -128,7 +129,7 @@ public class EditorActivity extends AppCompatActivity {
 
 
 
-        finish();
+
     }
 
     private void finishEditing(){

@@ -6,107 +6,65 @@
     android:layout_height="match_parent"
     tools:context=".TermDetailActivity"
     >
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/course_list_fab"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="181dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginEnd="41dp"
-        android:layout_marginRight="41dp"
-        android:layout_marginTop="77dp"
-        app:layout_anchorGravity="right|bottom"
-        android:onClick=""
-        app:srcCompat="@android:drawable/stat_notify_chat" />
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
-    <RelativeLayout
-        android:id="@+id/course_detail_header"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:background="@color/colorPrimary"
-        android:layout_alignParentTop="true"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/course_detail_name"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/term_detail_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginBottom="@dimen/text_view_margin"
-            android:layout_marginEnd="@dimen/text_view_margin"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="@dimen/text_view_margin"
-            android:layout_marginStart="@dimen/text_view_margin"
-            android:layout_marginTop="@dimen/text_view_margin"
-            android:textColor="@color/header_text"
-            android:textSize="@dimen/text_large"
-            android:text="Hello World"/>
-        <!--todo remove hard coded text-->
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            />
 
-        <TextView
-            android:id="@+id/activity_course_detail_start"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/course_detail_name"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:layout_marginBottom="@dimen/text_view_margin"
-            android:layout_marginEnd="@dimen/text_view_margin"
-            android:layout_marginLeft="@dimen/text_view_margin"
-            android:layout_marginRight="@dimen/text_view_margin"
-            android:layout_marginStart="@dimen/text_view_margin"
-            android:layout_marginTop="@dimen/text_view_margin"
-            android:padding="@dimen/md_padding"
-            android:text="Start"
-            android:textColor="@color/header_text"
-            android:textSize="@dimen/text_size_md" />
-        <!--todo remove hard coded text-->
-
-        <TextView
-            android:id="@+id/activity_course_detail_end"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/activity_course_detail_start"
-            android:layout_toEndOf="@id/activity_course_detail_start"
-            android:layout_below="@id/course_detail_name"
-            android:layout_marginBottom="@dimen/text_view_margin"
-            android:layout_marginEnd="@dimen/text_view_margin"
-            android:layout_marginLeft="@dimen/text_view_margin"
-            android:layout_marginRight="@dimen/text_view_margin"
-            android:layout_marginStart="@dimen/text_view_margin"
-            android:layout_marginTop="@dimen/text_view_margin"
-            android:padding="@dimen/md_padding"
-            android:text="end"
-            android:textColor="@color/header_text"
-            android:textSize="@dimen/text_size_md" />
-        <!--todo remove hard coded text-->
-    </RelativeLayout>
-
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/term_detail_container"
-        android:layout_width="match_parent"
-        android:layout_height="467dp"
+    </android.support.design.widget.AppBarLayout>
+    <TextView
+        android:id="@+id/activity_course_detail_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_below="@id/course_detail_header"
-        android:layout_marginTop="100dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_marginBottom="@dimen/text_view_margin"
+        android:layout_marginEnd="@dimen/text_view_margin"
+        android:layout_marginLeft="@dimen/text_view_margin"
+        android:layout_marginRight="@dimen/text_view_margin"
+        android:layout_marginStart="@dimen/text_view_margin"
+        android:layout_marginTop="@dimen/text_view_margin"
+        android:padding="@dimen/md_padding"
+        android:text="Start"
+        android:textColor="@color/header_text"
+        android:textSize="@dimen/text_size_md" />
+    <!--todo remove hard coded text-->
 
-        <ListView
-            android:id="@+id/activity_course_detail_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"/>
+    <TextView
+        android:id="@+id/activity_course_detail_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/text_view_margin"
+        android:layout_marginEnd="@dimen/text_view_margin"
+        android:layout_marginLeft="@dimen/text_view_margin"
+        android:layout_marginRight="@dimen/text_view_margin"
+        android:layout_marginStart="@dimen/text_view_margin"
+        android:layout_marginTop="@dimen/text_view_margin"
+        android:layout_toEndOf="@id/activity_course_detail_start"
+        android:layout_toRightOf="@id/activity_course_detail_start"
+        android:padding="@dimen/md_padding"
+        android:text="end"
+        android:textColor="@color/header_text"
+        android:textSize="@dimen/text_size_md" />
 
-    </android.support.v4.widget.NestedScrollView>
+    <!--todo remove hard coded text-->
+
+
+    <ListView
+        android:id="@+id/activity_course_detail_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/activity_course_detail_start"
+         />
+
 
 
 </RelativeLayout>

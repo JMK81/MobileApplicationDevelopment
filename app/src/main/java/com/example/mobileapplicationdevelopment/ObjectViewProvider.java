@@ -15,25 +15,33 @@ public class ObjectViewProvider extends ContentProvider {
 
     private SQLiteOpenHelper dbHelper;
 
+    //term bass path
     private static final String AUTHORITY = "com.example.mobileapplicationdevelopment.objectviewprovider";
     private static final String BASE_PATH = "term";
-    public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH );
+    public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH);
+    //course bass path
+
 
     // Constant to identify the requested operation
     private static final int TERM = 1;
     private static final int TERM_ID = 2;
 
+
     private static final UriMatcher uriMatcher =
             new UriMatcher(UriMatcher.NO_MATCH);
 
-    public static final String CONTENT_ITEM_TYPE = "TERM";
+    public static final String TERM_CONTENT_TYPE = "TERM";
 
-    static{
+
+    static {
         uriMatcher.addURI(AUTHORITY, BASE_PATH, TERM);
         uriMatcher.addURI(AUTHORITY, BASE_PATH + "/#", TERM_ID);
-    }
-    private SQLiteDatabase database;
 
+    }
+
+    private SQLiteDatabase database;
+// todo needs to have metods to pull items form db cources assessments and notes.
+    //pass uri return a db object with the querie method
 
     @Override
     public boolean onCreate() {
@@ -48,22 +56,17 @@ public class ObjectViewProvider extends ContentProvider {
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection,
                         @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-      //where clause using the uri that is pass to the method
-        if(uriMatcher.match(uri) == TERM_ID){
+
+        //where clause using the uri that is pass to the method
+        if (uriMatcher.match(uri) == TERM_ID) {
             //returns the numeric value of the primary key with in the term table
             selection = DBOpenHelper.TERM_ID + " = " + uri.getLastPathSegment();
         }
 
-        if(uriMatcher.match(uri) == TERM_ID){
-            selection = DBOpenHelper.TERM_ID + "=" + uri.getLastPathSegment();
-        }
-        //todo more conditions for finding the course PK, assessments pk, notes, and reminders
         return database.query(DBOpenHelper.TABLE_TERM, DBOpenHelper.ALL_TERM_COLUMNS, selection,
-                null, null, null, DBOpenHelper.TERM_START + " DESC"
-        );
+                null, null, null, DBOpenHelper.TERM_START + " DESC");
 
     }
-
 
     @Nullable
     @Override

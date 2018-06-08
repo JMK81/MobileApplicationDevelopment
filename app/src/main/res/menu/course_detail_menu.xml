@@ -2,13 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.mobileapplicationdevelopment.TermListActivity">
+    tools:context="com.example.mobileapplicationdevelopment.CourseDetailActivity"
+    >
     <item
-        android:id="@+id/action_view_term"
-        android:icon="@drawable/ic_document_add"
+        android:id="@+id/action_delete"
         android:orderInCategory="100"
-        android:title="View Terms"
+        android:title="@string/action_delete"
+        android:icon="@drawable/ic_document_delete"
         app:showAsAction="always"
-        android:onClick="actionAdd"/>
+        />
 
 </menu>
