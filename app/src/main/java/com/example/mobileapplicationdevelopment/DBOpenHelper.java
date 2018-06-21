@@ -36,55 +36,13 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                     ")";
 
     //CONSTANTS FOR NOTES
-    public static final String TABLE_NOTES = "notes";
-    public static final String NOTE_ID = "_id";
-    public static final String NOTE_TITLE = "noteTitle";
-    public static final String NOTE_TEXT = "noteText";
-    public static final String NOTE_TYPE = "noteType";
-    public static final String NOTE_CREATE_DATE = "noteCreateDate";
-
-    public static final String[] ALL_NOTE_COLUMNS = {NOTE_ID, NOTE_TITLE, NOTE_TYPE,
-            NOTE_CREATE_DATE};
-
-    //SQL to create table notes
-    private static final String NOTE_TABLE_CREATE =
-            "CREATE TABLE " + TABLE_NOTES + "(" +
-                    NOTE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    NOTE_TITLE + " TEXT, " +
-                    NOTE_TEXT + " TEXT, " +
-                    NOTE_TYPE + " TEXT, " +
-                    NOTE_CREATE_DATE + " TEXT DEFAULT CURRENT_TIMESTAMP" +
-                    ")";
-    //CONSTANTS FOR ASSESSMENTS
-    public static final String TABLE_ASSESSMENTS = "assessments";
-    public static final String ASSESSMENT_ID = "_id";
-    public static final String ASSESSMENT_TITLE = "assessmentTitle";
-    public static final String ASSESSMENT_TYPE = "assessmentType";
-    public static final String ASSESSMENT_DATE = "assessmentDate";
-    public static final String ASSESSMENT_NOTE = "assessmentNote";
-
-    public static final String[] ALL_ASSESSMENTS_COLUMNS = {
-            ASSESSMENT_ID, ASSESSMENT_TITLE, ASSESSMENT_TYPE, ASSESSMENT_DATE, ASSESSMENT_NOTE
-    };
-
-    //SQL to create assessments table
-    public static final String ASSESSMENT_TABLE_CREATE =
-            "CREATE TABLE " + TABLE_ASSESSMENTS + "(" +
-                    ASSESSMENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    ASSESSMENT_TITLE + " TEXT, " +
-                    ASSESSMENT_TYPE + " TEXT, " +
-                    ASSESSMENT_DATE + " TEXT, " +
-                    ASSESSMENT_NOTE + " TEXT, " +
-                    "FOREIGN KEY(" + ASSESSMENT_NOTE + ") REFERENCES " + TABLE_NOTES + "(" + NOTE_ID + ")" +
-                    ")";
 
 
     //Constants for identifying terms table and columns
     public static final String TABLE_TERM = "term";
     public static final String TERM_ID = "_id";
     public static final String TERM_NAME = "termText";
-    public static final String TERM_START = "termStart"
-            ;
+    public static final String TERM_START = "termStart";
     public static final String TERM_END = "termEnd";
 
 
@@ -111,10 +69,10 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     public static final String COURSE_TERM = "courseTerm";
     public static final String COURSE_ASSESSMENTS = "courseAssessments";
     public static final String COURSE_MENTOR = "courseMentor";
-    public static final String COURSE_NOTES = "courseNotes";
 
-    public static final String[] ALL_COURSE_COLLUMS = {COURSE_ID, COURSE_TEXT, COURSE__START,
-            COURSE_END, COURSE_MENTOR, COURSE_ASSESSMENTS, COURSE_NOTES};
+
+    public static final String[] ALL_COURSE_COLUMNS = {COURSE_ID, COURSE_TEXT, COURSE__START,
+            COURSE_END,  COURSE_TERM, COURSE_ASSESSMENTS, COURSE_MENTOR};
 
     //SQL to create table courses ** FOREIGN KEY(customer_id) REFERENCES customers(id),
     private static final String COURSE_TABLE_CREATE =
@@ -126,28 +84,75 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                     COURSE_TERM + " INTEGER," +
                     COURSE_ASSESSMENTS + " INTEGER, " +
                     COURSE_MENTOR + " INTEGER, " +
-                    COURSE_NOTES + " INTEGER, " +
-                    "FOREIGN KEY (" + COURSE_TERM + ") REFERENCES " + TABLE_TERM + "(" + TERM_ID + ")," +
-                    "FOREIGN KEY (" + COURSE_ASSESSMENTS + ") REFERENCES " + TABLE_ASSESSMENTS + "(" + ASSESSMENT_ID + ")," +
-                    "FOREIGN KEY (" + COURSE_MENTOR + ") REFERENCES " + TABLE_MENTOR + "(" + MENTOR_ID + ")" +
+                    "FOREIGN KEY (" + COURSE_MENTOR + ") REFERENCES " + TABLE_MENTOR + "(" + MENTOR_ID + ")," +
+                    "FOREIGN KEY (" + COURSE_TERM + ") REFERENCES " + TABLE_TERM + "(" + TERM_ID + ")" +
                     ")";
 
+    //CONSTANTS FOR ASSESSMENTS
+    public static final String TABLE_ASSESSMENTS = "assessments";
+    public static final String ASSESSMENT_ID = "_id";
+    public static final String ASSESSMENT_TITLE = "assessmentTitle";
+    public static final String ASSESSMENT_TYPE = "assessmentType";
+    public static final String ASSESSMENT_DATE = "assessmentDate";
+    public static final String ASSESSMENT_TIME = "assessmentTime";
+    public static final String ASSESSMENT_NOTE = "assessmentNote";
+    public static final String ASSESSMENT_COURSE = "assessmentCourse";
+
+    public static final String[] ALL_ASSESSMENTS_COLUMNS = {
+            ASSESSMENT_ID, ASSESSMENT_TITLE, ASSESSMENT_TYPE, ASSESSMENT_DATE, ASSESSMENT_TIME,
+            ASSESSMENT_COURSE, ASSESSMENT_NOTE
+    };
+
+    //SQL to create assessments table
+    public static final String ASSESSMENT_TABLE_CREATE =
+            "CREATE TABLE " + TABLE_ASSESSMENTS + "(" +
+                    ASSESSMENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    ASSESSMENT_TITLE + " TEXT, " +
+                    ASSESSMENT_TYPE + " TEXT, " +
+                    ASSESSMENT_DATE + " TEXT, " +
+                    ASSESSMENT_TIME + " TEXT, " +
+                    ASSESSMENT_COURSE + " TEXT, " +
+                    ASSESSMENT_NOTE + " TEXT, " +
+                    "FOREIGN KEY(" + ASSESSMENT_COURSE + ") REFERENCES " + TABLE_COURSE + "(" + COURSE_ID + ")" +
+                    ")";
 
     public DBOpenHelper(Context context) {
 
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
     }
+    public static final String TABLE_NOTES = "notes";
+    public static final String NOTE_ID = "_id";
+    public static final String NOTE_TITLE = "noteTitle";
+    public static final String NOTE_TEXT = "noteText";
+    public static final String NOTE_TYPE = "noteType";
+    public static final String NOTE_ASSESSMENT = "noteAssessment";
+    public static final String NOTE_CREATE_DATE = "noteCreateDate";
+
+    public static final String[] ALL_NOTE_COLUMNS = {NOTE_ID, NOTE_TITLE, NOTE_TYPE,
+            NOTE_CREATE_DATE};
+
+    //SQL to create table notes
+    private static final String NOTE_TABLE_CREATE =
+            "CREATE TABLE " + TABLE_NOTES + "(" +
+                    NOTE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    NOTE_TITLE + " TEXT, " +
+                    NOTE_TEXT + " TEXT, " +
+                    NOTE_TYPE + " TEXT, " +
+                    NOTE_ASSESSMENT + " TEXT, " +
+                    NOTE_CREATE_DATE + " TEXT DEFAULT CURRENT_TIMESTAMP," +
+                    "FOREIGN KEY(" + NOTE_ASSESSMENT + ") REFERENCES " + TABLE_ASSESSMENTS +"("+ ASSESSMENT_ID +")" +
+                    ")";
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         //todo remove debug message
-            Resources res = context.getResources();
-            db.execSQL(TERM_TABLE_CREATE);
-            db.execSQL(NOTE_TABLE_CREATE);
-            db.execSQL(ASSESSMENT_TABLE_CREATE);
-            db.execSQL(MENTOR_TABLE_CREATE);
-            db.execSQL(COURSE_TABLE_CREATE);
+        Resources res = context.getResources();
+        db.execSQL(TERM_TABLE_CREATE);
+        db.execSQL(NOTE_TABLE_CREATE);
+        db.execSQL(MENTOR_TABLE_CREATE);
+        db.execSQL(COURSE_TABLE_CREATE);
+        db.execSQL(ASSESSMENT_TABLE_CREATE);
 
 
     }

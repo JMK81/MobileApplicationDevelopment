@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.mobileapplicationdevelopment.TermListActivity">
     <item
-        android:id="@+id/action_view_term"
+        android:id="@+id/action_add"
         android:icon="@drawable/ic_document_add"
         android:orderInCategory="100"
-        android:title="View Terms"
+        android:title="Add"
         app:showAsAction="always"
-        android:onClick="actionAdd"/>
+      />
 
 </menu>

@@ -19,6 +19,10 @@ public class ObjectViewProvider extends ContentProvider {
     private static final String AUTHORITY = "com.example.mobileapplicationdevelopment.objectviewprovider";
     private static final String BASE_PATH = "term";
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH);
+
+    private static final String COURSE_AUTHORITY = "com.example.mobileapplicationdevelopment.courseviewprovider";
+    private static final String COURSE_BASE_PATH = "course";
+    public static final Uri COURSE_URI = Uri.parse("content://" + COURSE_AUTHORITY + "/" + COURSE_BASE_PATH);
     //course bass path
 
 
@@ -38,34 +42,43 @@ public class ObjectViewProvider extends ContentProvider {
         uriMatcher.addURI(AUTHORITY, BASE_PATH + "/#", TERM_ID);
 
     }
+    static public boolean isTermUri(Uri uri){
+        if(uri != null && uriMatcher.match(uri) == TERM_ID){
+            return true;
+        }
+        return false;
+    }
 
     private SQLiteDatabase database;
 // todo needs to have metods to pull items form db cources assessments and notes.
+@Override
+public boolean onCreate() {
+
+    DBOpenHelper helper = new DBOpenHelper(getContext());
+    database = helper.getWritableDatabase();
+    return true;
+
+}
+
     //pass uri return a db object with the querie method
-
-    @Override
-    public boolean onCreate() {
-
-        DBOpenHelper helper = new DBOpenHelper(getContext());
-        database = helper.getWritableDatabase();
-        return true;
-
-    }
 
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection,
                         @Nullable String[] selectionArgs, @Nullable String sortOrder) {
+        Cursor cursor;
 
-        //where clause using the uri that is pass to the method
+        //selectes a single term
         if (uriMatcher.match(uri) == TERM_ID) {
             //returns the numeric value of the primary key with in the term table
             selection = DBOpenHelper.TERM_ID + " = " + uri.getLastPathSegment();
+            cursor =  database.query(DBOpenHelper.TABLE_TERM, DBOpenHelper.ALL_TERM_COLUMNS, selection,
+                    null, null, null, DBOpenHelper.TERM_START + " DESC");
+        } else{
+            cursor = database.query(DBOpenHelper.TABLE_TERM, DBOpenHelper.ALL_TERM_COLUMNS, selection,
+                    null, null, null, DBOpenHelper.TERM_START + " DESC");
         }
-
-        return database.query(DBOpenHelper.TABLE_TERM, DBOpenHelper.ALL_TERM_COLUMNS, selection,
-                null, null, null, DBOpenHelper.TERM_START + " DESC");
-
+        return cursor;
     }
 
     @Nullable
@@ -80,6 +93,7 @@ public class ObjectViewProvider extends ContentProvider {
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
         long id = database.insert(DBOpenHelper.TABLE_TERM, null, values);
         return Uri.parse(BASE_PATH + "/" + id);
+
     }
 
     @Override

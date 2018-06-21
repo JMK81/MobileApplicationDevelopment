@@ -5,9 +5,12 @@ import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.database.DatabaseUtils;
 import android.os.Bundle;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -35,9 +38,15 @@ public class TermDetailActivity extends AppCompatActivity implements LoaderManag
 
     private Uri uri;
 
+    private String courseFilter;
     private String termFilter;
+    private String term;
+    private String start;
+    private String end;
+    private String termId;
     private CourseCursorAdapter cursorAdapter;
     private static final int COURSE_REQUEST_CODE = 2002;
+    private static final int TERM_REQUEST_CODE = 1001;
 
 
     //todo list will display courses in the appbar it needs to display the term title start and end dates
@@ -56,40 +65,49 @@ public class TermDetailActivity extends AppCompatActivity implements LoaderManag
 
 
 
-        termStart = (TextView) findViewById(R.id.activity_course_detail_start);
-        termEnd = (TextView) findViewById(R.id.activity_course_detail_end);
+        //check if the activity is starting a new activity or returning to an exsiting state
+        if (savedInstanceState == null) {
+            Intent intent = getIntent();
+            uri = intent.getParcelableExtra(ObjectViewProvider.TERM_CONTENT_TYPE);
+            termId = uri.getLastPathSegment();
+            term = intent.getStringExtra("termTitle");
+            start = intent.getStringExtra("termStart");
+            end = intent.getStringExtra("termEnd");
+            setTitle(term);
 
-        Intent intent = getIntent();
+        } else {
+            uri = savedInstanceState.getParcelable(ObjectViewProvider.TERM_CONTENT_TYPE);
+            restartLoader();
+            Intent intent = savedInstanceState.getParcelable("intent");
+            Log.d("TermDA", "SavedInstaceState != null loader reset");
+            termId = uri.getLastPathSegment();
+            term = intent.getStringExtra("termTitle");
+            start = intent.getStringExtra("termStart");
+            end = intent.getStringExtra("termEnd");
+            setTitle(term);
+        }
 
-        uri = intent.getParcelableExtra(ObjectViewProvider.TERM_CONTENT_TYPE);
-
-        termFilter = DBOpenHelper.TERM_ID + "=" + uri.getLastPathSegment();
-
-
-        Cursor cursor = getContentResolver().query(uri, DBOpenHelper.ALL_COURSE_COLLUMS, termFilter,
+        TextView termStart = (TextView) findViewById(R.id.activity_course_detail_start);
+        termStart.setText(start);
+        TextView termEnd = (TextView) findViewById(R.id.activity_course_detail_end);
+        termEnd.setText(end);
+        courseFilter = DBOpenHelper.COURSE_TERM + " = " + uri.getLastPathSegment();
+        Log.d("db uri TDA", uri.getPath());
+        Cursor courseCursor = getContentResolver().query(uri, DBOpenHelper.ALL_COURSE_COLUMNS, courseFilter,
                 null, null);
-        cursor.moveToFirst();
 
-        insertNote("Simple note");
-        insertNote("Multi-line\nnote");
-        insertNote("Very long note with a lot of text that exceeds the width of the screen");
-        restartLoader();
-
-
-        //cursor is attached to term table
-        setTitle(cursor.getString(cursor.getColumnIndex(DBOpenHelper.TERM_NAME)));
-        termStart.setText("Hello Start");//(cursor.getString(cursor.getColumnIndex(DBOpenHelper.TERM_START)));
-        termEnd.setText("Hello End");//(cursor.getString(cursor.getColumnIndex(DBOpenHelper.TERM_END)));
-
-        //fixme the cursorAdapter need to take in the parant term cursor to filter the results
-        cursorAdapter = new CourseCursorAdapter(this, null, 0);
-        //cusor to hold course items
-
-        //todo connect list to a course cursor adapter
         ListView list = (ListView) findViewById(R.id.activity_course_detail_list);
-        list.setAdapter(cursorAdapter);
+        if (courseCursor != null && courseCursor.getCount()>0) {
+            //if there are any matches to the query call  && courseCursor.getString(courseCursor.getColumnIndex(DBOpenHelper.TERM_ID)
+            courseCursor.moveToFirst();
+            cursorAdapter = new CourseCursorAdapter(this, courseCursor, 0);
+            list.setAdapter(cursorAdapter);
 
+            Log.d("db course count", courseCursor.getCount()+"");
+        }
         getLoaderManager().initLoader(0, null, this);
+
+
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -97,42 +115,69 @@ public class TermDetailActivity extends AppCompatActivity implements LoaderManag
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(TermDetailActivity.this, CourseDetailActivity.class);
                 Uri uri = Uri.parse(CourseViewProvider.COURSE_URI + "/" + id);
+                Log.d("TDA course id", "  " + id);
                 intent.putExtra(CourseViewProvider.COURSE_CONTENT_TYPE, uri);
+                TextView title = (TextView) view.findViewById(R.id.tvTerm);
+                String courseTitle = title.getText().toString();
+                TextView ts = (TextView) view.findViewById(R.id.term_start);
+                String courseStart = ts.getText().toString();
+                TextView te = (TextView) view.findViewById(R.id.term_end);
+                String courseEnd = te.getText().toString();
+                intent.putExtra("title", courseTitle);
+                intent.putExtra("start", courseStart);
+                intent.putExtra("end", courseEnd);
+                intent.putExtra("courseId", id);
+                intent.putExtra("term", termId);
                 startActivityForResult(intent, COURSE_REQUEST_CODE);
 
 
             }
         });
-/*     Intent intent = new Intent(TermListActivity.this,TermDetailActivity.class);
-  *      Uri uri = Uri.parse(ObjectViewProvider.CONTENT_URI + "/" + id);
-   *     intent.putExtra(ObjectViewProvider.TERM_CONTENT_TYPE, uri);
-    *    startActivityForResult(intent, TERM_REQUEST_CODE);
-     */
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.term_detail_fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(TermDetailActivity.this, CourseAddActivity.class);
+                intent.putExtra(ObjectViewProvider.TERM_CONTENT_TYPE, uri);
+                startActivityForResult(intent, COURSE_REQUEST_CODE);
+            }
+        });
+
 
     }
-    public void actionEdit(MenuItem item) {
 
-        Intent intent = new Intent(this, EditorActivity.class);
+    public void actionEdit() {
+        Intent intent = new Intent(TermDetailActivity.this, EditorActivity.class);
         intent.putExtra(ObjectViewProvider.TERM_CONTENT_TYPE, uri);
         startActivityForResult(intent, COURSE_REQUEST_CODE);
         Log.d("actionAddTerm", "test =--->");
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.term_detail, menu);
+        getMenuInflater().inflate(R.menu.menu_edit, menu);
         return true;
     }
 
-    private void insertNote(String courseText) {
-        ContentValues values = new ContentValues();
-        values.put(DBOpenHelper.COURSE_TEXT, courseText);
-        Uri noteUri = getContentResolver().insert(CourseViewProvider.COURSE_URI,
-                values);
-        Log.d("MainActivity", "Inserted note " + noteUri.getLastPathSegment());
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (item.getItemId()) {
+            case R.id.action_edit:
+                //edit or delete term
+                Intent intent = new Intent(TermDetailActivity.this, EditorActivity.class);
+                intent.putExtra(ObjectViewProvider.TERM_CONTENT_TYPE, uri);
+                startActivityForResult(intent, TERM_REQUEST_CODE);
+                break;
+        }
+        return true;
     }
 
     private void restartLoader() {
+
         getLoaderManager().restartLoader(0, null, this);
     }
 
@@ -145,20 +190,17 @@ public class TermDetailActivity extends AppCompatActivity implements LoaderManag
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if(cursorAdapter != null && cursorAdapter.getCount() >0)
         cursorAdapter.swapCursor(data);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+    if(cursorAdapter != null && cursorAdapter.getCount()>0) {
         cursorAdapter.swapCursor(null);
     }
+    }
 
-    //TODO
-//    public void openAddTerm(View view) {
-//        Intent intent = new Intent(this, AddActivity.class);
-//        //use this to
-//        startActivityForResult(intent, TERM_REQUEST_CODE);
-//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -167,4 +209,27 @@ public class TermDetailActivity extends AppCompatActivity implements LoaderManag
         }
 
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle bundle) {
+
+        bundle.putParcelable(ObjectViewProvider.TERM_CONTENT_TYPE, uri);
+        Intent intent = getIntent();
+        intent.putExtra("termTitle", term);
+        intent.putExtra("termStart", start);
+        intent.putExtra("termEnd", end);
+        bundle.putParcelable("intent", intent);
+
+        super.onSaveInstanceState(bundle);
+
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceStart) {
+        // todo
+        super.onRestoreInstanceState(savedInstanceStart);
+        restartLoader();
+    }
+
+
 }

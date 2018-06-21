@@ -22,4 +22,7 @@
     <string name="title_activity_editor">EditorActivity</string>
     <string name="action_delete">Delete</string>
     <string name="title_activity_cource_add">CourceAddActivity</string>
+    <string name="all_deleted">Course was deleted</string>
+    <string name="edit">Edit</string>
+    <string name="title_activity_assessment_detail">AssessmentDetailActivity</string>
 </resources>

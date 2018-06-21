@@ -98,17 +98,16 @@
                 android:layout_width="182dp"
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@id/course_mentor"
-                android:layout_below="@id/course_start"
+                android:layout_below="@id/course_end"
                 android:layout_marginBottom="20dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
-                android:layout_toEndOf="@id/course_end"
-                android:layout_toRightOf="@id/course_end"
-                android:
-                android:inputType="text|date" />
+                android:layout_toEndOf="@id/course_mentor"
+                android:layout_toRightOf="@id/course_mentor"
+                android:inputType="text" />
 
 
             <TextView
@@ -120,12 +119,13 @@
                 android:text="Assessments:" />
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/assment_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@+id/assessments"
                 android:layout_centerHorizontal="true"
-                android:text="Add Assessments" />
+                android:text="Add Assessments"
+               />
 
 
         </RelativeLayout>

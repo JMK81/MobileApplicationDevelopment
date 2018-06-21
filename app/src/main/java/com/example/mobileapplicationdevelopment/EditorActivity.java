@@ -20,9 +20,9 @@ import android.widget.Toast;
 
 public class EditorActivity extends AppCompatActivity {
     private String action;
-    private String termFilter;
     private String oldName;
     private String oldStart;
+    private String termFilter;
     private String oldEnd;
 
     private EditText editName;
@@ -46,11 +46,12 @@ public class EditorActivity extends AppCompatActivity {
 
         Uri uri = intent.getParcelableExtra(ObjectViewProvider.TERM_CONTENT_TYPE);
 
-        if(uri == null){
+        if (uri == null) {
             action = Intent.ACTION_INSERT;
             setTitle("New Term");
-        }else{
+        } else {
             action = Intent.ACTION_EDIT;
+
             //getting the numeric term PK of the record to be edited
             termFilter = DBOpenHelper.TERM_ID + " = " + uri.getLastPathSegment();
             //give acsess to the record in the db
@@ -58,6 +59,7 @@ public class EditorActivity extends AppCompatActivity {
                     null, null);
             cursor.moveToFirst();
             oldName = cursor.getString(cursor.getColumnIndex(DBOpenHelper.TERM_NAME));
+            setTitle(oldName);
             oldStart = cursor.getString(cursor.getColumnIndex(DBOpenHelper.TERM_START));
             oldEnd = cursor.getString(cursor.getColumnIndex(DBOpenHelper.TERM_END));
 
@@ -65,41 +67,39 @@ public class EditorActivity extends AppCompatActivity {
             editName.requestFocus();
             editStart.setText(oldStart);
             editEnd.setText(oldEnd);
+
+            cursor.close();
         }
-        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    */}
+    }
+
     @Override
-    public boolean onCreateOptionsMenu(Menu menu){
-        if(action.equals(Intent.ACTION_EDIT)){
-            getMenuInflater().inflate(R.menu.menu_editor, menu);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (action.equals(Intent.ACTION_EDIT)) {
+            getMenuInflater().inflate(R.menu.menu_delete, menu);
         }
+        getMenuInflater().inflate(R.menu.menu_add, menu);
         return true;
     }
+
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         switch (item.getItemId()) {
             case android.R.id.home:
                 finishEditing();
                 break;
+            case R.id.action_add:
+                finishEditing();
+                break;
             case R.id.action_delete:
                 deleteTerm();
                 break;
-
         }
-        return super.onOptionsItemSelected(item);
+
+        return true;
     }
 
-//fixme dialog box opens but the record is deleted before the aswer can be taken form the user
     private void deleteTerm() {
         DialogInterface.OnClickListener dialogClickListener =
                 new DialogInterface.OnClickListener() {
@@ -114,9 +114,9 @@ public class EditorActivity extends AppCompatActivity {
                             Toast.makeText(EditorActivity.this,
                                     getString(R.string.delete),
                                     Toast.LENGTH_SHORT).show();
-                        }else if(button == DialogInterface.BUTTON_NEGATIVE){
+                        } else if (button == DialogInterface.BUTTON_NEGATIVE) {
 
-                            }
+                        }
 
                     }
                 };
@@ -126,46 +126,42 @@ public class EditorActivity extends AppCompatActivity {
                 .setPositiveButton(getString(android.R.string.yes), dialogClickListener)
                 .setNegativeButton(getString(android.R.string.no), dialogClickListener)
                 .show();
-
-
-
-
     }
 
-    private void finishEditing(){
+    private void finishEditing() {
         String newName = editName.getText().toString().trim();
-        Log.d("EditorActivity", newName);
         String newStart = editStart.getText().toString().trim();
         String newEnd = editEnd.getText().toString().trim();
         //checking there is a new term if a new term then inset into the db
-        switch(action) {
+        switch (action) {
             case Intent.ACTION_INSERT://
-                if(newName.length() == 0 && newStart.length() == 0 && newEnd.length() == 0){
-                setResult(RESULT_CANCELED);
-                    }else{
-                    insertTerm(newName);
-                    }
-                    break;
-                //if not new note update the exsiting note
+                if (newName.length() == 0 && newStart.length() == 0 && newEnd.length() == 0) {
+                    setResult(RESULT_CANCELED);
+                } else {
+                    insertTerm(newName, newStart, newEnd);
+                }
+                break;
+            //if not new note update the exsiting note
             case Intent.ACTION_EDIT:
                 //if all values are null the note will be deleted
-                if(newName.length() == 0 && newStart.length() == 0 && newEnd.length() == 0){
-                   deleteTerm();
-                   
+                if (newName.length() == 0 && newStart.length() == 0 && newEnd.length() == 0) {
+                    deleteTerm();
                     //if true cancel return to list
-                }else if(newName.equals(oldName) && newStart.equals(oldStart) && newEnd.equals(oldEnd)){
+                } else if (newName.equals(oldName) && newStart.equals(oldStart) && newEnd.equals(oldEnd)) {
                     setResult(RESULT_CANCELED);
-                }else{
-                    updateNote(newName);
+                } else {
+                    updateNote(newName, newStart, newEnd);
                 }
         }
 
         finish();
     }
 
-    private void updateNote(String termText) {
+    private void updateNote(String termText, String startText, String endText) {
         ContentValues values = new ContentValues();
         values.put(DBOpenHelper.TERM_NAME, termText);
+        values.put(DBOpenHelper.TERM_START, startText);
+        values.put(DBOpenHelper.TERM_END, endText);
 
         getContentResolver().update(ObjectViewProvider.CONTENT_URI, values, termFilter, null);
         Toast.makeText(this, "Term Updated", Toast.LENGTH_SHORT);
@@ -174,16 +170,22 @@ public class EditorActivity extends AppCompatActivity {
 
     }
 
-    private void insertTerm(String termText) {
+    private void insertTerm(String termText, String startText, String endText) {
         ContentValues values = new ContentValues();
         values.put(DBOpenHelper.TERM_NAME, termText);
+        values.put(DBOpenHelper.TERM_START, startText);
+        values.put(DBOpenHelper.TERM_END, endText);
 
         getContentResolver().insert(ObjectViewProvider.CONTENT_URI, values);
         setResult(RESULT_OK);
     }
+
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
+
         finishEditing();
+
+
     }
 
 }

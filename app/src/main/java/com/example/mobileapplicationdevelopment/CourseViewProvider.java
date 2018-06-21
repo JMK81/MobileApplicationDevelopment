@@ -46,15 +46,18 @@ public class CourseViewProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-
-        //were item that it is selected form is the term parent
-       /* if (uriMatcher.match(uri) == COURSE_ID) {
-            selection = DBOpenHelper.COURSE_TERM + "=" + uri.getLastPathSegment();//this uri is course
-            Log.d("CVP", uri.getLastPathSegment());
+        String basePath = uri.getPath();
+        //select a single course
+        if (uriMatcher.match(uri) == COURSE_ID) {
+            selection = DBOpenHelper.COURSE_ID + "=" + uri.getLastPathSegment();//this uri is course
+            return database.query(DBOpenHelper.TABLE_COURSE, DBOpenHelper.ALL_COURSE_COLUMNS, selection,
+                    null, null, null, DBOpenHelper.COURSE_TEXT + " DESC");
+        }else if(uriMatcher.match(uri) == COURSE){
+            //select courses term_id match a course_term
+            return database.query(DBOpenHelper.TABLE_COURSE, DBOpenHelper.ALL_COURSE_COLUMNS, selection,
+                    null, null, null, DBOpenHelper.COURSE_TEXT + " DESC");
         }
-*/
-        return database.query(DBOpenHelper.TABLE_COURSE, DBOpenHelper.ALL_COURSE_COLLUMS, selection,
-                null, null, null, DBOpenHelper.COURSE_TEXT + " DESC");
+        return null;
     }
 
     @Nullable

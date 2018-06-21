@@ -36,19 +36,16 @@ public class TermCursorAdapter extends CursorAdapter {
         int pos = termName.indexOf(20);
         if (pos != -1) {
             termName = termName.substring(0, pos) + "...";
+            Log.d("db OVP termId", termId);
         }
-        try {
-            //this
             TextView tv = (TextView) view.findViewById(R.id.tvTerm);
             tv.setText(termName);
-            Log.d("TermCursorAdapter:", "termName TextView");
+
             TextView sd = (TextView) view.findViewById(R.id.term_start);
             sd.setText(termStart);
             TextView ed = (TextView) view.findViewById(R.id.term_end);
             ed.setText(termEnd);
-        } catch (Exception e) {
-            Log.d("TermCusronAdapter", e.toString() + "Binding view");
-        }
+
 
     }
 }

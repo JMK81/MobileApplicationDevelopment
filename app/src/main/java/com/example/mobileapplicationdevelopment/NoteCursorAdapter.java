@@ -1,4 +1,4 @@
 package com.example.mobileapplicationdevelopment;
 
-public class AssessmentsViewAdapter {
+class NoteCursorAdapter {
 }

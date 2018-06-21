@@ -15,6 +15,12 @@ public class CourseCursorAdapter extends CursorAdapter {
         super(context, c, flags);
     }
 
+    String courseId;
+    String courseStart;
+    String courseEnd;
+    String courseText;
+
+
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         return LayoutInflater.from(context).inflate(R.layout.term_list_content, parent, false);
@@ -23,31 +29,35 @@ public class CourseCursorAdapter extends CursorAdapter {
     @Override                                       //cursor in the db term object
     public void bindView(View view, Context context, Cursor cursor) {
         //needs to target the course table
-        String courseId   = cursor.getColumnName(cursor.getColumnIndex(DBOpenHelper.COURSE_ID));
-        String courseStart = cursor.getString(cursor.getColumnIndex(DBOpenHelper.COURSE__START));
-        String courseText = cursor.getString(cursor.getColumnIndex(DBOpenHelper.COURSE_TEXT));
-        String courseEnd = cursor.getString(cursor.getColumnIndex(DBOpenHelper.COURSE_END));
-        Log.d("@A1", "after line 29 strings have been inithlized");
+        if(cursor.isNull(cursor.getColumnIndex(DBOpenHelper.COURSE_TERM)) ||
+                cursor.isNull(cursor.getColumnIndex(DBOpenHelper.COURSE__START)) ||
+                cursor.isNull(cursor.getColumnIndex(DBOpenHelper.COURSE_TEXT)) ||
+                cursor.isNull(cursor.getColumnIndex(DBOpenHelper.COURSE_END))){
+             courseText = "There in no course assigned to this term";
+
+        }else {
+            courseId = cursor.getString(cursor.getColumnIndex(DBOpenHelper.COURSE_ID));
+            courseStart = cursor.getString(cursor.getColumnIndex(DBOpenHelper.COURSE__START));
+            courseText = cursor.getString(cursor.getColumnIndex(DBOpenHelper.COURSE_TEXT));
+            courseEnd = cursor.getString(cursor.getColumnIndex(DBOpenHelper.COURSE_END));
+        }
 
         //a string longer then 10 will get ... added to the end
         int pos = courseText.indexOf(20);
         if (pos != -1) {
             courseText = courseText.substring(0, pos) + "...";
         }
-        try {
-            //fixme need to add to xml files
-            TextView tv = (TextView) view.findViewById(R.id.tvTerm);
-            tv.setText(courseText);
-            Log.d("TermCursorAdapter:", "termName TextView");
-            TextView sd = (TextView) view.findViewById(R.id.term_start);
-            sd.setText(courseStart);
-            TextView ed = (TextView) view.findViewById(R.id.term_end);
-            ed.setText(courseEnd);
-        } catch (Exception e) {
-            Log.d("TermCusronAdapter", e.toString() + "Binding view");
-        }
+
+
+        //fixme need to add to xml files
+        TextView tv = (TextView) view.findViewById(R.id.tvTerm);
+        tv.setText(courseText);
+        TextView sd = (TextView) view.findViewById(R.id.term_start);
+        sd.setText(courseStart);
+        TextView ed = (TextView) view.findViewById(R.id.term_end);
+        ed.setText(courseEnd);
 
     }
 
-    }
+}
 
