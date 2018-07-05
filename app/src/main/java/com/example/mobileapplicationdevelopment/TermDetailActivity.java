@@ -92,7 +92,7 @@ public class TermDetailActivity extends AppCompatActivity implements LoaderManag
         TextView termEnd = (TextView) findViewById(R.id.activity_course_detail_end);
         termEnd.setText(end);
         courseFilter = DBOpenHelper.COURSE_TERM + " = " + uri.getLastPathSegment();
-        Log.d("db uri TDA", uri.getPath());
+
         Cursor courseCursor = getContentResolver().query(uri, DBOpenHelper.ALL_COURSE_COLUMNS, courseFilter,
                 null, null);
 
@@ -102,8 +102,6 @@ public class TermDetailActivity extends AppCompatActivity implements LoaderManag
             courseCursor.moveToFirst();
             cursorAdapter = new CourseCursorAdapter(this, courseCursor, 0);
             list.setAdapter(cursorAdapter);
-
-            Log.d("db course count", courseCursor.getCount()+"");
         }
         getLoaderManager().initLoader(0, null, this);
 
@@ -115,19 +113,7 @@ public class TermDetailActivity extends AppCompatActivity implements LoaderManag
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(TermDetailActivity.this, CourseDetailActivity.class);
                 Uri uri = Uri.parse(CourseViewProvider.COURSE_URI + "/" + id);
-                Log.d("TDA course id", "  " + id);
                 intent.putExtra(CourseViewProvider.COURSE_CONTENT_TYPE, uri);
-                TextView title = (TextView) view.findViewById(R.id.tvTerm);
-                String courseTitle = title.getText().toString();
-                TextView ts = (TextView) view.findViewById(R.id.term_start);
-                String courseStart = ts.getText().toString();
-                TextView te = (TextView) view.findViewById(R.id.term_end);
-                String courseEnd = te.getText().toString();
-                intent.putExtra("title", courseTitle);
-                intent.putExtra("start", courseStart);
-                intent.putExtra("end", courseEnd);
-                intent.putExtra("courseId", id);
-                intent.putExtra("term", termId);
                 startActivityForResult(intent, COURSE_REQUEST_CODE);
 
 

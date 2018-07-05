@@ -42,12 +42,6 @@ public class ObjectViewProvider extends ContentProvider {
         uriMatcher.addURI(AUTHORITY, BASE_PATH + "/#", TERM_ID);
 
     }
-    static public boolean isTermUri(Uri uri){
-        if(uri != null && uriMatcher.match(uri) == TERM_ID){
-            return true;
-        }
-        return false;
-    }
 
     private SQLiteDatabase database;
 // todo needs to have metods to pull items form db cources assessments and notes.
@@ -84,9 +78,10 @@ public boolean onCreate() {
     @Nullable
     @Override
     public String getType(@NonNull Uri uri) {
-        return null;
+
+    return TERM_CONTENT_TYPE;
     }
-    //todo make metods that you can pass a table name as well as ContentValues ??
+
 
     @Nullable
     @Override

@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -18,10 +17,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 public class CourseDetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -32,18 +31,21 @@ public class CourseDetailActivity extends AppCompatActivity implements LoaderMan
     private TextView start;
     private TextView end;
     private TextView mentor;
+    private TextView mentorPhone;
+    private TextView mentorEmail;
+
+    ImageButton assessmentAddBtn;
+
     private String courseTitle;
     private String courseStart;
     private String courseEnd;
     private String courseMentor;
+    private String courseMentorPhone;
+    private String courseMentorEmail;
     private String courseId;
     private String term;
 
-
-
-
     private static final int ASSESSMENT_REQUEST_CODE = 4004;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,79 +53,88 @@ public class CourseDetailActivity extends AppCompatActivity implements LoaderMan
         setContentView(R.layout.activity_course_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         title = (TextView) findViewById(R.id.course_item_name);
         start = (TextView) findViewById(R.id.course_item_start);
         end = (TextView) findViewById(R.id.course_item_end);
         mentor = (TextView) findViewById(R.id.course_item_mentor);
+        mentorEmail = (TextView) findViewById(R.id.course_mentor_email);
+        mentorPhone = (TextView) findViewById(R.id.course_mentor_phone);
+        assessmentAddBtn = (ImageButton) findViewById(R.id.assessment_add_btn);
 
         if (savedInstanceState == null) {
+            //assigning string from the saveInstanceState Bund
             Intent intent = getIntent();
             uri = intent.getParcelableExtra(CourseViewProvider.COURSE_CONTENT_TYPE);
-            term = intent.getStringExtra("term");
-            courseTitle = intent.getStringExtra("title");
-            courseStart = intent.getStringExtra("start");
-            courseEnd = intent.getStringExtra("end");
-            courseMentor = intent.getStringExtra("mentor");
-            long id = 0;
-            courseId = intent.getLongExtra("courseId", id)+"";
-        } else {
+            Log.d("cda if test", "saved instance state is null and");
+            Log.d("cda if intent :)", intent.toString());
+            Log.d("cda if uri print ", uri.getLastPathSegment());
+        } else {//only when retruning form the add/edit
             uri = savedInstanceState.getParcelable(CourseViewProvider.COURSE_CONTENT_TYPE);
-            Intent intent = savedInstanceState.getParcelable("intent");
-            courseId = intent.getStringExtra("courseId");
-            courseTitle = intent.getStringExtra("courseTitle");
-            courseStart = intent.getStringExtra("termStart");
-            courseEnd = intent.getStringExtra("termEnd");
-            courseMentor = intent.getStringExtra("mentor");
-            term = intent.getStringExtra("termId");
+            Log.d("cda   else", "uri returning form edit: " + uri.toString());
         }
+        courseId = uri.getLastPathSegment();
+        String courseFilter = DBOpenHelper.COURSE_ID + " = " + courseId;
+        Cursor course = getContentResolver().query(uri, DBOpenHelper.ALL_COURSE_COLUMNS, courseFilter,
+                null, null);
+        course.moveToFirst();
+        DatabaseUtils.dumpCursor(course);
+        courseTitle = course.getString(course.getColumnIndex(DBOpenHelper.COURSE_TEXT));
+        courseStart = course.getString(course.getColumnIndex(DBOpenHelper.COURSE__START));
+        courseEnd = course.getString(course.getColumnIndex(DBOpenHelper.COURSE_END));
+        courseMentor = course.getString(course.getColumnIndex(DBOpenHelper.COURSE_MENTOR));
+        courseMentorPhone = course.getString(course.getColumnIndex(DBOpenHelper.MENTOR_PHONE));
+        courseMentorEmail = course.getString(course.getColumnIndex(DBOpenHelper.MENTOR_EMAIL));
+        term = course.getString(course.getColumnIndex(DBOpenHelper.COURSE_TERM));
+        course.close();
 
-            title.setText(courseTitle);
-            start.setText(courseStart);
-            end.setText(courseEnd);
-            mentor.setText(courseMentor);
-            assessmentFilter = DBOpenHelper.ASSESSMENT_COURSE + " = " + courseId;
-            Log.d("db assessmentFilter", assessmentFilter + " ------->");
+        title.setText(courseTitle);
+        start.setText(courseStart);
+        end.setText(courseEnd);
+        mentor.setText(courseMentor);
+        mentorPhone.setText(courseMentorPhone);
+        mentorEmail.setText(courseMentorEmail);
+
+        assessmentFilter = DBOpenHelper.ASSESSMENT_COURSE + " = " + courseId;
+
         Cursor assessmentCursor = getContentResolver().query(AssessmentViewProvider.ASSESSMENT_URI, DBOpenHelper.ALL_ASSESSMENTS_COLUMNS,
                 assessmentFilter, null, null);
 
-        if (assessmentCursor != null && assessmentCursor.getCount()>0) {
+
+        if (assessmentCursor != null && assessmentCursor.getCount() > 0) {
             assessmentCursor.moveToFirst();
             //cursor addapter needs to referance the assessments table
-            Log.d("db assessments call ", assessmentCursor.getCount()+" ***");
-                assessmentAdapter = new AssessmentsCursorAdapter(this, assessmentCursor, 0);
-                ListView list = (ListView) findViewById(R.id.course_detail_list);
-                list.setAdapter(assessmentAdapter);
-
-            DatabaseUtils.dumpCursor(assessmentCursor);
+            assessmentAdapter = new AssessmentsCursorAdapter(this, assessmentCursor, 0);
+            ListView list = (ListView) findViewById(R.id.course_detail_list);
+            list.setAdapter(assessmentAdapter);
             getLoaderManager().initLoader(0, null, this);
 
             list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent intent = new Intent(CourseDetailActivity.this, AssessmentDetailActivity.class);
-                    Uri uri = Uri.parse(CourseViewProvider.COURSE_URI + "/" + id);
-                    Log.d("TDA course id", "  " + id);
-                    intent.putExtra(CourseViewProvider.COURSE_CONTENT_TYPE, uri);
-                    TextView title = (TextView) view.findViewById(R.id.tvTerm);
-                    String assessmentTitle = title.getText().toString();
-                    TextView ad = (TextView) view.findViewById(R.id.term_start);
-                    String assessmentDate = ad.getText().toString();
-                    TextView at = (TextView) view.findViewById(R.id.term_end);
-                    String assessmentEnd = at.getText().toString();
-                    intent.putExtra("title", assessmentTitle);
-                    intent.putExtra("date", assessmentDate);
-                    intent.putExtra("time", assessmentEnd);
-                    intent.putExtra("course", id);
+                    Uri uri = Uri.parse(AssessmentViewProvider.ASSESSMENT_URI + "/" + id);
+                    intent.putExtra(AssessmentViewProvider.ASSESSMENT_CONTENT_TYPE, uri);
                     startActivityForResult(intent, ASSESSMENT_REQUEST_CODE);
-
 
                 }
             });
-
         }
-        getLoaderManager().initLoader(0, null, this);
+        assessmentAddBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CourseDetailActivity.this, AssessmentAddActivity.class);
+                intent.putExtra(CourseViewProvider.COURSE_CONTENT_TYPE, uri);
+                intent.putExtra("course", courseId);
+                startActivityForResult(intent, ASSESSMENT_REQUEST_CODE);
+                Snackbar.make(v, "The add buton was pressed", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+
+            }
+        });
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -133,15 +144,7 @@ public class CourseDetailActivity extends AppCompatActivity implements LoaderMan
                         .setAction("Action", null).show();
             }
         });
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-    //TODO need to be able to click on mentor
-
-    public void actionAdd() {
-        Intent intent = new Intent(CourseDetailActivity.this, AssessmentAddActivity.class);
-        intent.putExtra("courseId", courseId);
-        startActivityForResult(intent, ASSESSMENT_REQUEST_CODE);
-        Log.d("actionAddTerm", "test =--->");
+        getLoaderManager().initLoader(0, null, this);
 
     }
 
@@ -164,8 +167,6 @@ public class CourseDetailActivity extends AppCompatActivity implements LoaderMan
         return true;
     }
 
-
-
     public void actionEdit() {
         Intent intent = new Intent(CourseDetailActivity.this, CourseAddActivity.class);
         intent.putExtra(CourseViewProvider.COURSE_CONTENT_TYPE, uri);
@@ -179,18 +180,21 @@ public class CourseDetailActivity extends AppCompatActivity implements LoaderMan
                 null, null, null, null);
     }
 
-    private void restartLoader(){
+    private void restartLoader() {
+
         getLoaderManager().restartLoader(0, null, this);
     }
+
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if(assessmentAdapter != null && assessmentAdapter.getCount() >0){
+        if (assessmentAdapter != null && assessmentAdapter.getCount() > 0) {
             assessmentAdapter.swapCursor(data);
         }
     }
+
     @Override
-    protected void onActivityResult(int requestCode, int resuldCode, Intent data){
-        if(requestCode == ASSESSMENT_REQUEST_CODE && requestCode == RESULT_OK){
+    protected void onActivityResult(int requestCode, int resuldCode, Intent data) {
+        if (requestCode == ASSESSMENT_REQUEST_CODE && requestCode == RESULT_OK) {
             restartLoader();
         }
     }
@@ -198,33 +202,33 @@ public class CourseDetailActivity extends AppCompatActivity implements LoaderMan
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        if(assessmentAdapter != null && assessmentAdapter.getCount()>0){
+        if (assessmentAdapter != null && assessmentAdapter.getCount() > 0) {
             assessmentAdapter.swapCursor(null);
         }
     }
+
     @Override
     public void onSaveInstanceState(Bundle bundle) {
 
-        bundle.putParcelable(ObjectViewProvider.TERM_CONTENT_TYPE, uri);
-        Intent intent = getIntent();
-        intent.putExtra("title", courseTitle);
-        intent.putExtra("start", courseStart);
-        intent.putExtra("end", courseEnd);
-        intent.putExtra("mentor", courseMentor);
-        intent.putExtra("courseId", courseId);
-        intent.putExtra("term", term);
-        bundle.putParcelable("intent", intent);
-
-
+       /* bundle.putParcelable(CourseViewProvider.COURSE_CONTENT_TYPE, uri);
+        Log.d("cda save instance", uri.toString());*/
         super.onSaveInstanceState(bundle);
 
     }
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceStart) {
-        // todo
+
         super.onRestoreInstanceState(savedInstanceStart);
-        restartLoader();
+
+    }
+
+    @Override
+    public void onResume() {
+
+        super.onResume();
+
+
     }
 
 }

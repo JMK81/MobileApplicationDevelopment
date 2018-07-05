@@ -4,6 +4,7 @@ import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
@@ -49,13 +50,16 @@ public class CourseViewProvider extends ContentProvider {
         String basePath = uri.getPath();
         //select a single course
         if (uriMatcher.match(uri) == COURSE_ID) {
+
             selection = DBOpenHelper.COURSE_ID + "=" + uri.getLastPathSegment();//this uri is course
+
             return database.query(DBOpenHelper.TABLE_COURSE, DBOpenHelper.ALL_COURSE_COLUMNS, selection,
-                    null, null, null, DBOpenHelper.COURSE_TEXT + " DESC");
-        }else if(uriMatcher.match(uri) == COURSE){
+                    null, null, null, DBOpenHelper.COURSE__START + " DESC");
+
+        } else if (uriMatcher.match(uri) == COURSE) {
             //select courses term_id match a course_term
             return database.query(DBOpenHelper.TABLE_COURSE, DBOpenHelper.ALL_COURSE_COLUMNS, selection,
-                    null, null, null, DBOpenHelper.COURSE_TEXT + " DESC");
+                    null, null, null, DBOpenHelper.COURSE__START + " DESC");
         }
         return null;
     }

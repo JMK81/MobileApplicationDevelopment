@@ -37,7 +37,7 @@ public class AssessmentsCursorAdapter extends CursorAdapter {
             assessmentTitle = assessmentTitle.substring(0, pos) + "...";
         }
 
-            Log.d("AssessmentCusronAdapter",  "Binding view");
+
             //fixme need to add to xml files
             TextView tv = (TextView) view.findViewById(R.id.tvTerm);
             tv.setText(assessmentTitle);
@@ -45,8 +45,7 @@ public class AssessmentsCursorAdapter extends CursorAdapter {
             sd.setText(assessmentDate);
             TextView ed = (TextView) view.findViewById(R.id.term_end);
             ed.setText(assessmentTime);
-            Log.d("ACA + items bond", assessmentTitle+ " "
-                    + assessmentDate+ " " + assessmentDate + " " + assessmentTime);
+
 
 
     }

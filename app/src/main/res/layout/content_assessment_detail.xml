@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".AssessmentDetailActivity"
     tools:showIn="@layout/activity_assessment_detail">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/assessment_name"
+            android:id="@+id/assessment_type"
             android:layout_width="wrap_content"
             android:layout_height="23dp"
             android:layout_alignParentLeft="true"
@@ -21,20 +20,20 @@
             android:text="Assessment Type:" />
 
         <TextView
-            android:id="@+id/assessment_item_name"
+            android:id="@+id/assessment_item_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@id/assessment_name"
+            android:layout_alignBaseline="@id/assessment_type"
             android:layout_margin="20dp"
-            android:layout_toEndOf="@id/assessment_name"
-            android:layout_toRightOf="@id/assessment_name"
+            android:layout_toEndOf="@id/assessment_item_type"
+            android:layout_toRightOf="@id/assessment_type"
             android:text="TextView" />
 
         <TextView
             android:id="@+id/assessment_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/assessment_name"
+            android:layout_below="@id/assessment_type"
             android:layout_margin="20dp"
             android:text="Date" />
 
@@ -75,17 +74,17 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/assessment_item_time"
             android:layout_margin="20dp"
-            android:text="Notes: " />
+            android:text="Note: " />
 
 
-        <ListView
-            android:id="@+id/assessment_detail_list"
-            android:layout_width="250dp"
-            android:layout_height="200dp"
-            android:layout_below="@id/assessment_item_time"
-            android:layout_alignBaseline="@id/notes"
-            android:layout_alignParentRight="true"
-            android:layout_margin="20dp"></ListView>
+        <TextView
+            android:id="@+id/assessment_item_note"
+            android:layout_width="243dp"
+            android:layout_height="237dp"
+            android:text="TextView"
+            tools:layout_editor_absoluteX="94dp"
+            tools:layout_editor_absoluteY="240dp" />
     </RelativeLayout>
+
 
 </android.support.constraint.ConstraintLayout>

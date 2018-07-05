@@ -8,9 +8,13 @@
     tools:context=".AssessmentAddActivity"
     tools:showIn="@layout/activity_assessment_add">
 
+
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true">
+
 
         <TextView
             android:id="@+id/assessment_title"
@@ -18,7 +22,7 @@
             android:layout_height="23dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_margin="20dp"
+            android:layout_margin="@dimen/detail_margin"
             android:text="Assessment Title:" />
 
         <EditText
@@ -26,63 +30,83 @@
             android:layout_width="173dp"
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@id/assessment_title"
-            android:layout_marginBottom="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_margin="@dimen/detail_margin"
             android:layout_toEndOf="@id/assessment_title"
             android:layout_toRightOf="@id/assessment_title"
             android:inputType="text" />
 
         <TextView
-            android:id="@+id/assessment_date"
+            android:id="@+id/assessment_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/assessment_title"
-            android:layout_margin="20dp"
-            android:text="Date: " />
+            android:layout_margin="@dimen/detail_margin"
+            android:text="Type: " />
 
         <EditText
-            android:id="@+id/assessment_input_date"
-            android:layout_width="203dp"
+            android:id="@+id/assessment_input_type"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@id/assessment_date"
-            android:layout_below="@id/course_start"
-            android:layout_marginBottom="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_alignBaseline="@id/assessment_type"
+            android:layout_below="@id/assessment_input_title"
+            android:layout_margin="@dimen/detail_margin"
             android:layout_toEndOf="@id/assessment_date"
             android:layout_toRightOf="@id/assessment_date"
-            android:inputType="date" />
+            android:hint="Objective or project"
+            android:inputType="text"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/assessment_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/assessment_type"
+            android:layout_margin="20dp"
+            android:text="Date:   " />
+
+        <TextView
+            android:id="@+id/assessment_input_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/assessment_date"
+            android:layout_below="@id/assessment_input_type"
+            android:layout_margin="20dp"
+            android:layout_toRightOf="@+id/assessment_date"
+            android:text="Pick a date" />
+
+        <ImageButton
+            android:id="@+id/assessment_add_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/assessment_input_type"
+            android:layout_toRightOf="@id/assessment_input_date"
+            app:srcCompat="@drawable/ic_document_edit" />
 
         <TextView
             android:id="@+id/assessment_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
             android:layout_below="@id/assessment_date"
             android:layout_margin="20dp"
             android:text="Time: " />
 
-        <EditText
+        <TextView
             android:id="@+id/assessment_input_time"
-            android:layout_width="180dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@id/assessment_time"
-            android:layout_below="@id/assessment_date"
-            android:layout_marginBottom="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_toEndOf="@id/assessment_date"
-            android:layout_toRightOf="@id/assessment_date"
-            android:inputType="date" />
+            android:layout_below="@id/assessment_input_date"
+            android:layout_margin="20dp"
+            android:layout_toRightOf="@+id/assessment_time"
+            android:text="Pick a time" />
+
+        <ImageButton
+            android:id="@+id/assessment_add_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/assessment_add_date"
+            android:layout_toRightOf="@id/assessment_input_time"
+            app:srcCompat="@drawable/ic_document_edit" />
 
         <TextView
             android:id="@+id/assessment_note"
@@ -92,9 +116,10 @@
             android:layout_margin="20dp"
             android:text="Note: " />
 
+
         <EditText
             android:id="@+id/assessment_input_note"
-            android:layout_width="182dp"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@id/assessment_note"
             android:layout_below="@id/course_end"
@@ -106,7 +131,12 @@
             android:layout_marginTop="20dp"
             android:layout_toEndOf="@id/assessment_note"
             android:layout_toRightOf="@id/assessment_note"
-            android:inputType="text" />
+            android:gravity="top|left"
+            android:hint="Add a note about the Assessment"
+            android:inputType="textMultiLine"
+            android:lines="10"
+            android:minLines="8" />
+
 
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

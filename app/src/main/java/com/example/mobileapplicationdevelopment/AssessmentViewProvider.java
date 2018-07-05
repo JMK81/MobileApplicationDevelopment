@@ -48,15 +48,16 @@ public class AssessmentViewProvider extends ContentProvider {
         Cursor cursor;
         //were item that it is selected form is the term parent
         if (uriMatcher.match(uri) == ASSESSMENT_ID) {
-            selection = DBOpenHelper.TABLE_ASSESSMENTS + "=" + uri.getLastPathSegment();//this uri is course
+            selection = DBOpenHelper.ASSESSMENT_ID + "=" + uri.getLastPathSegment();//this uri is course
             cursor = database.query(DBOpenHelper.TABLE_ASSESSMENTS, DBOpenHelper.ALL_ASSESSMENTS_COLUMNS, selection,
                     null, null, null, DBOpenHelper.ASSESSMENT_DATE + " DESC");
+            Log.d("avp if uri == at_id", " it dose!! why is it still null");
         } else {
             cursor = database.query(DBOpenHelper.TABLE_ASSESSMENTS, DBOpenHelper.ALL_ASSESSMENTS_COLUMNS, selection,
                     null, null, null, DBOpenHelper.ASSESSMENT_DATE + " DESC");
         }
         Log.d("db AVP", "query");
-        DatabaseUtils.dumpCursor(cursor);
+
         return cursor;
 
     }

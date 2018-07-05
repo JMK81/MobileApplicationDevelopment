@@ -1,24 +1,27 @@
 package com.example.mobileapplicationdevelopment;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class EditorActivity extends AppCompatActivity {
+import java.text.DateFormat;
+import java.util.Calendar;
+
+public class EditorActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
     private String action;
     private String oldName;
     private String oldStart;
@@ -28,6 +31,8 @@ public class EditorActivity extends AppCompatActivity {
     private EditText editName;
     private EditText editStart;
     private EditText editEnd;
+    private EditText dateTarget;
+
 
 
     @Override
@@ -43,7 +48,8 @@ public class EditorActivity extends AppCompatActivity {
         editEnd = (EditText) findViewById(R.id.edit_end);
 
         Intent intent = getIntent();
-
+//todo put the term info in as extras and pull course info ** store a procedure in
+        //todo db to dellete all courses assessments and mentors if the term get delted
         Uri uri = intent.getParcelableExtra(ObjectViewProvider.TERM_CONTENT_TYPE);
 
         if (uri == null) {
@@ -188,4 +194,28 @@ public class EditorActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.YEAR, year);
+        c.set(Calendar.MONTH, month);
+        c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        String currentDateString = DateFormat.getDateInstance(DateFormat.SHORT).format(c.getTime());
+
+        dateTarget.setText(currentDateString);
+    }
+
+    public void pickStart(View v) {
+        DialogFragment datePicker = new DatePickerFragment();
+        datePicker.show(getSupportFragmentManager(), "datePicker");
+        dateTarget = (EditText) findViewById(R.id.edit_start);
+
+    }
+
+    public void pickEnd(View v) {
+        DialogFragment datePicker = new DatePickerFragment();
+        datePicker.show(getSupportFragmentManager(), "datePicker");
+        dateTarget = (EditText) findViewById(R.id.edit_end);
+
+    }
 }

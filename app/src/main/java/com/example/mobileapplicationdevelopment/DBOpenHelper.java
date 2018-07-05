@@ -13,31 +13,6 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "term.db";
     private static final int DATABASE_VERSION = 1;
 
-    //CONSTANTS FOR MENTOR
-    public static final String TABLE_MENTOR = "mentor";
-    public static final String MENTOR_ID = "_id";
-    public static final String MENTOR_NAME = "mentorName";
-    public static final String MENTOR_EMAIL = "mentorEmail";
-    public static final String MENTOR_PHONE = "mentorPhone";
-    public static final String MENTOR_COURSE = "mentorCourses";
-
-    public static final String[] ALL_MENTOR_COLUMNS = {
-            MENTOR_ID, MENTOR_NAME, MENTOR_EMAIL, MENTOR_PHONE
-    };
-
-    //SQL to create mentors table
-    public static final String MENTOR_TABLE_CREATE =
-            "CREATE TABLE " + TABLE_MENTOR + "(" +
-                    MENTOR_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    MENTOR_NAME + " TEXT, " +
-                    MENTOR_EMAIL + " TEXT, " +
-                    MENTOR_PHONE + " TEXT," +
-                    MENTOR_COURSE + " TEXT" +
-                    ")";
-
-    //CONSTANTS FOR NOTES
-
-
     //Constants for identifying terms table and columns
     public static final String TABLE_TERM = "term";
     public static final String TERM_ID = "_id";
@@ -69,10 +44,12 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     public static final String COURSE_TERM = "courseTerm";
     public static final String COURSE_ASSESSMENTS = "courseAssessments";
     public static final String COURSE_MENTOR = "courseMentor";
+    public static final String MENTOR_EMAIL = "mentorEmail";
+    public static final String MENTOR_PHONE = "mentorPhone";
 
 
     public static final String[] ALL_COURSE_COLUMNS = {COURSE_ID, COURSE_TEXT, COURSE__START,
-            COURSE_END,  COURSE_TERM, COURSE_ASSESSMENTS, COURSE_MENTOR};
+            COURSE_END, COURSE_TERM, COURSE_ASSESSMENTS, COURSE_MENTOR, MENTOR_EMAIL, MENTOR_PHONE};
 
     //SQL to create table courses ** FOREIGN KEY(customer_id) REFERENCES customers(id),
     private static final String COURSE_TABLE_CREATE =
@@ -84,7 +61,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                     COURSE_TERM + " INTEGER," +
                     COURSE_ASSESSMENTS + " INTEGER, " +
                     COURSE_MENTOR + " INTEGER, " +
-                    "FOREIGN KEY (" + COURSE_MENTOR + ") REFERENCES " + TABLE_MENTOR + "(" + MENTOR_ID + ")," +
+                    MENTOR_EMAIL + " INTEGER, " +
+                    MENTOR_PHONE + " INTEGER, " +
                     "FOREIGN KEY (" + COURSE_TERM + ") REFERENCES " + TABLE_TERM + "(" + TERM_ID + ")" +
                     ")";
 
@@ -121,36 +99,12 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
     }
-    public static final String TABLE_NOTES = "notes";
-    public static final String NOTE_ID = "_id";
-    public static final String NOTE_TITLE = "noteTitle";
-    public static final String NOTE_TEXT = "noteText";
-    public static final String NOTE_TYPE = "noteType";
-    public static final String NOTE_ASSESSMENT = "noteAssessment";
-    public static final String NOTE_CREATE_DATE = "noteCreateDate";
-
-    public static final String[] ALL_NOTE_COLUMNS = {NOTE_ID, NOTE_TITLE, NOTE_TYPE,
-            NOTE_CREATE_DATE};
-
-    //SQL to create table notes
-    private static final String NOTE_TABLE_CREATE =
-            "CREATE TABLE " + TABLE_NOTES + "(" +
-                    NOTE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    NOTE_TITLE + " TEXT, " +
-                    NOTE_TEXT + " TEXT, " +
-                    NOTE_TYPE + " TEXT, " +
-                    NOTE_ASSESSMENT + " TEXT, " +
-                    NOTE_CREATE_DATE + " TEXT DEFAULT CURRENT_TIMESTAMP," +
-                    "FOREIGN KEY(" + NOTE_ASSESSMENT + ") REFERENCES " + TABLE_ASSESSMENTS +"("+ ASSESSMENT_ID +")" +
-                    ")";
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         //todo remove debug message
         Resources res = context.getResources();
         db.execSQL(TERM_TABLE_CREATE);
-        db.execSQL(NOTE_TABLE_CREATE);
-        db.execSQL(MENTOR_TABLE_CREATE);
         db.execSQL(COURSE_TABLE_CREATE);
         db.execSQL(ASSESSMENT_TABLE_CREATE);
 
@@ -160,9 +114,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTES);
+
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ASSESSMENTS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MENTOR);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_COURSE);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_TERM);
         onCreate(db);

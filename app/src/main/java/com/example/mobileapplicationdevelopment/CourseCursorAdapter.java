@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
+import java.util.function.DoubleBinaryOperator;
+
 public class CourseCursorAdapter extends CursorAdapter {
 
     public CourseCursorAdapter(Context context, Cursor c, int flags) {
@@ -19,6 +21,7 @@ public class CourseCursorAdapter extends CursorAdapter {
     String courseStart;
     String courseEnd;
     String courseText;
+    //String courseMentor;
 
 
     @Override
@@ -40,6 +43,7 @@ public class CourseCursorAdapter extends CursorAdapter {
             courseStart = cursor.getString(cursor.getColumnIndex(DBOpenHelper.COURSE__START));
             courseText = cursor.getString(cursor.getColumnIndex(DBOpenHelper.COURSE_TEXT));
             courseEnd = cursor.getString(cursor.getColumnIndex(DBOpenHelper.COURSE_END));
+            //courseMentor = cursor.getString(cursor.getColumnIndex(DBOpenHelper.MENTOR_NAME));
         }
 
         //a string longer then 10 will get ... added to the end
@@ -56,6 +60,9 @@ public class CourseCursorAdapter extends CursorAdapter {
         sd.setText(courseStart);
         TextView ed = (TextView) view.findViewById(R.id.term_end);
         ed.setText(courseEnd);
+        /*TextView cm = (TextView) view.findViewById(R.id.course_mentor);
+        cm.setText(courseMentor);*/
+
 
     }
 

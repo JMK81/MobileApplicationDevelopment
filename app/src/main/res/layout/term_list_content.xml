@@ -93,4 +93,22 @@
         android:textColor="@color/colorPrimaryDark"
         android:textSize="@dimen/text_size_md" />
 
+
+    <TextView
+        android:id="@+id/content_course_mentor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="false"
+        android:layout_below="@+id/start_date"
+        android:layout_marginBottom="@dimen/text_view_margin"
+        android:layout_marginEnd="@dimen/text_view_margin"
+        android:layout_marginLeft="@dimen/text_view_margin"
+        android:layout_marginRight="@dimen/text_view_margin"
+        android:layout_marginStart="@dimen/text_view_margin"
+        android:layout_marginTop="@dimen/text_view_margin"
+        android:text=""
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/text_size_md" />
+
+
 </RelativeLayout>
