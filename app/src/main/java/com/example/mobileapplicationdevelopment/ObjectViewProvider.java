@@ -44,7 +44,7 @@ public class ObjectViewProvider extends ContentProvider {
     }
 
     private SQLiteDatabase database;
-// todo needs to have metods to pull items form db cources assessments and notes.
+
 @Override
 public boolean onCreate() {
 
@@ -66,13 +66,13 @@ public boolean onCreate() {
         if (uriMatcher.match(uri) == TERM_ID) {
             //returns the numeric value of the primary key with in the term table
             selection = DBOpenHelper.TERM_ID + " = " + uri.getLastPathSegment();
-            cursor =  database.query(DBOpenHelper.TABLE_TERM, DBOpenHelper.ALL_TERM_COLUMNS, selection,
+            return cursor =  database.query(DBOpenHelper.TABLE_TERM, DBOpenHelper.ALL_TERM_COLUMNS, selection,
                     null, null, null, DBOpenHelper.TERM_START + " DESC");
-        } else{
-            cursor = database.query(DBOpenHelper.TABLE_TERM, DBOpenHelper.ALL_TERM_COLUMNS, selection,
+        } else if(uriMatcher.match(uri) == TERM){
+            return cursor = database.query(DBOpenHelper.TABLE_TERM, DBOpenHelper.ALL_TERM_COLUMNS, selection,
                     null, null, null, DBOpenHelper.TERM_START + " DESC");
         }
-        return cursor;
+        return null;
     }
 
     @Nullable

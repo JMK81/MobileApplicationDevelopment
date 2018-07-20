@@ -4,15 +4,12 @@ import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-
-import com.example.mobileapplicationdevelopment.DBOpenHelper;
 
 
 public class CourseViewProvider extends ContentProvider {
@@ -29,6 +26,7 @@ public class CourseViewProvider extends ContentProvider {
 
     private static final UriMatcher uriMatcher =
             new UriMatcher(UriMatcher.NO_MATCH);
+    String TAG = "CourseViewProvider";
 
     static {
         uriMatcher.addURI(COURSE_AUTHORITY, COURSE_BASE_PATH, COURSE);
@@ -50,7 +48,7 @@ public class CourseViewProvider extends ContentProvider {
         String basePath = uri.getPath();
         //select a single course
         if (uriMatcher.match(uri) == COURSE_ID) {
-
+Log.d(TAG, "uri: " + uri.getPath());
             selection = DBOpenHelper.COURSE_ID + "=" + uri.getLastPathSegment();//this uri is course
 
             return database.query(DBOpenHelper.TABLE_COURSE, DBOpenHelper.ALL_COURSE_COLUMNS, selection,
@@ -58,6 +56,7 @@ public class CourseViewProvider extends ContentProvider {
 
         } else if (uriMatcher.match(uri) == COURSE) {
             //select courses term_id match a course_term
+            Log.d(TAG, "selection is :" + selection);
             return database.query(DBOpenHelper.TABLE_COURSE, DBOpenHelper.ALL_COURSE_COLUMNS, selection,
                     null, null, null, DBOpenHelper.COURSE__START + " DESC");
         }

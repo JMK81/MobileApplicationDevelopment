@@ -1,7 +1,6 @@
 package com.example.mobileapplicationdevelopment;
 
 import android.app.LoaderManager;
-import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -16,34 +15,34 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class TermListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private TermCursorAdapter cursorAdapter;
     private static final int TERM_REQUEST_CODE = 1001;
-
+    String TAG = "TermListActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
+
         setContentView(R.layout.activity_term_list);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.view_toolbar);
+        Toolbar toolbar = findViewById(R.id.view_toolbar);
         setSupportActionBar(toolbar);
         Uri uri = ObjectViewProvider.CONTENT_URI;
         //need a Cursor adapter constant title
         Cursor cursor = getContentResolver().query(uri, DBOpenHelper.ALL_TERM_COLUMNS, null,
-        null, null);
+                null, null);
+        cursor.moveToFirst();
+        Log.d(TAG, "cursor count: " + cursor.getCount());
         cursorAdapter = new TermCursorAdapter(this, cursor, 0);
 
-        ListView list = (ListView) findViewById(R.id.view_list);
+        ListView list = findViewById(R.id.view_list);
 
         list.setAdapter(cursorAdapter);
-
-
-
 
         getLoaderManager().initLoader(0, null, this);
 
@@ -56,43 +55,31 @@ public class TermListActivity extends AppCompatActivity implements LoaderManager
                 Intent intent = new Intent(TermListActivity.this, TermDetailActivity.class);
                 Uri uri = Uri.parse(ObjectViewProvider.CONTENT_URI + "/" + id);
                 intent.putExtra(ObjectViewProvider.TERM_CONTENT_TYPE, uri);
-                TextView title = (TextView) view.findViewById(R.id.tvTerm);
-                String termTitle = title.getText().toString();
-                TextView ts = (TextView) view.findViewById(R.id.term_start);
-                String termStart = ts.getText().toString();
-                TextView te = (TextView) view.findViewById(R.id.term_end);
-                String termEnd = te.getText().toString();
-                intent.putExtra("termTitle", termTitle);
-                intent.putExtra("termStart", termStart);
-                intent.putExtra("termEnd", termEnd);
-                Log.d("db termlistActigvity ", termTitle);
-                intent.putExtra("title", parent.getItemIdAtPosition(position));
                 startActivityForResult(intent, TERM_REQUEST_CODE);
-                //todo when the item is clicked term detail will open with courses
-
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Cursor cursorUpdate = getContentResolver().query(ObjectViewProvider.CONTENT_URI, DBOpenHelper.ALL_TERM_COLUMNS, null,
+                null, null);
+        cursorUpdate.moveToFirst();
+        cursorAdapter.swapCursor(cursorUpdate);
+        Log.d(TAG, "cursorUpdate count: " + cursorUpdate.getCount());
 
     }
 
     public void actionAdd(MenuItem item) {
         Intent intent = new Intent(TermListActivity.this, EditorActivity.class);
         startActivityForResult(intent, TERM_REQUEST_CODE);
-
-    }
-
-//todo not needed in this activity
-    private void insertTerm(String termText) {
-        ContentValues values = new ContentValues();
-        values.put(DBOpenHelper.TERM_NAME, termText);
-        Uri termUri = getContentResolver().insert(ObjectViewProvider.CONTENT_URI, values);
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_add, menu);
+        getMenuInflater().inflate(R.menu.navigate_view, menu);
         return true;
     }
 
@@ -101,10 +88,22 @@ public class TermListActivity extends AppCompatActivity implements LoaderManager
         int id = item.getItemId();
 
         switch (id) {
+            case R.id.action_home:
+                restartLoader();
+                break;
             case R.id.action_add:
                 actionAdd(item);
                 break;
-
+            case R.id.action_add_alarm:
+                Intent intent = new Intent(TermListActivity.this, SetNotification.class);
+                startActivityForResult(intent, TERM_REQUEST_CODE);
+                break;
+            case R.id.action_edit:
+                Toast.makeText(this, "Select an item first", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.action_delete:
+                Toast.makeText(this, "Select an item first", Toast.LENGTH_SHORT).show();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -138,13 +137,6 @@ public class TermListActivity extends AppCompatActivity implements LoaderManager
         if (requestCode == TERM_REQUEST_CODE && resultCode == RESULT_OK) {
             restartLoader();
         }
-
-    }
-
-    //FIXME SEE IF THIS METHOD IS USED!!
-    public void openEditorForNewNote(View view) {
-        Intent intent = new Intent(this, EditorActivity.class);
-        startActivityForResult(intent, TERM_REQUEST_CODE);
 
     }
 }

@@ -4,7 +4,6 @@ import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
@@ -49,16 +48,15 @@ public class AssessmentViewProvider extends ContentProvider {
         //were item that it is selected form is the term parent
         if (uriMatcher.match(uri) == ASSESSMENT_ID) {
             selection = DBOpenHelper.ASSESSMENT_ID + "=" + uri.getLastPathSegment();//this uri is course
-            cursor = database.query(DBOpenHelper.TABLE_ASSESSMENTS, DBOpenHelper.ALL_ASSESSMENTS_COLUMNS, selection,
+            return cursor = database.query(DBOpenHelper.TABLE_ASSESSMENTS, DBOpenHelper.ALL_ASSESSMENTS_COLUMNS, selection,
                     null, null, null, DBOpenHelper.ASSESSMENT_DATE + " DESC");
-            Log.d("avp if uri == at_id", " it dose!! why is it still null");
-        } else {
-            cursor = database.query(DBOpenHelper.TABLE_ASSESSMENTS, DBOpenHelper.ALL_ASSESSMENTS_COLUMNS, selection,
+        } else if(uriMatcher.match(uri) == ASSESSMENT) {
+            return cursor = database.query(DBOpenHelper.TABLE_ASSESSMENTS, DBOpenHelper.ALL_ASSESSMENTS_COLUMNS, selection,
                     null, null, null, DBOpenHelper.ASSESSMENT_DATE + " DESC");
         }
-        Log.d("db AVP", "query");
 
-        return cursor;
+
+        return null;
 
     }
     @Nullable

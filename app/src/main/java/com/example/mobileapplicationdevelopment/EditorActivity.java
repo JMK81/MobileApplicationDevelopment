@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -27,11 +28,14 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
     private String oldStart;
     private String termFilter;
     private String oldEnd;
+    private String termId;
 
     private EditText editName;
     private EditText editStart;
     private EditText editEnd;
     private EditText dateTarget;
+
+    private static int EDITOR_RETURN = 444;
 
 
 
@@ -40,16 +44,17 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
-        editName = (EditText) findViewById(R.id.edit_name);
-        editStart = (EditText) findViewById(R.id.edit_start);
-        editEnd = (EditText) findViewById(R.id.edit_end);
+        editName = findViewById(R.id.edit_name);
+        editStart = findViewById(R.id.edit_start);
+        editEnd = findViewById(R.id.edit_end);
 
         Intent intent = getIntent();
-//todo put the term info in as extras and pull course info ** store a procedure in
-        //todo db to dellete all courses assessments and mentors if the term get delted
+
         Uri uri = intent.getParcelableExtra(ObjectViewProvider.TERM_CONTENT_TYPE);
 
         if (uri == null) {
@@ -57,6 +62,7 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
             setTitle("New Term");
         } else {
             action = Intent.ACTION_EDIT;
+            termId = uri.getLastPathSegment();
 
             //getting the numeric term PK of the record to be edited
             termFilter = DBOpenHelper.TERM_ID + " = " + uri.getLastPathSegment();
@@ -94,9 +100,11 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
         switch (item.getItemId()) {
             case android.R.id.home:
                 finishEditing();
+                finish();
                 break;
             case R.id.action_add:
                 finishEditing();
+                finish();
                 break;
             case R.id.action_delete:
                 deleteTerm();
@@ -107,31 +115,56 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
     }
 
     private void deleteTerm() {
-        DialogInterface.OnClickListener dialogClickListener =
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int button) {
-                        if (button == DialogInterface.BUTTON_POSITIVE) {
-                            //db management
-                            getContentResolver().delete(ObjectViewProvider.CONTENT_URI, termFilter, null);
-                            setResult(RESULT_OK);
-                            finish();
 
-                            Toast.makeText(EditorActivity.this,
-                                    getString(R.string.delete),
-                                    Toast.LENGTH_SHORT).show();
-                        } else if (button == DialogInterface.BUTTON_NEGATIVE) {
+            Cursor cursorUpdate = getContentResolver().query(CourseViewProvider.COURSE_URI, DBOpenHelper.ALL_COURSE_COLUMNS,
+                    DBOpenHelper.COURSE_TERM + " = " + termId,
+                    null, null);
+            DatabaseUtils.dumpCursor(cursorUpdate);
+        if (cursorUpdate.getCount() == 0) {
+            DialogInterface.OnClickListener dialogClickListener =
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int button) {
+                            if (button == DialogInterface.BUTTON_POSITIVE) {
+                                //db management
+                                getContentResolver().delete(ObjectViewProvider.CONTENT_URI, termFilter, null);
+                                setResult(RESULT_OK);
+                                Cursor cursorUpdate = getContentResolver().query(ObjectViewProvider.CONTENT_URI, DBOpenHelper.ALL_TERM_COLUMNS, null,
+                                        null, null);
+                                Intent intent = new Intent(EditorActivity.this, TermListActivity.class);
+                                startActivityForResult(intent, EDITOR_RETURN);
+                                finish();
 
+                                Toast.makeText(EditorActivity.this,
+                                        getString(R.string.delete),
+                                        Toast.LENGTH_SHORT).show();
+                            } else if (
+                                    button == DialogInterface.BUTTON_NEGATIVE) {
+
+                            }
                         }
+                    };
 
-                    }
-                };
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(getString(R.string.are_you_sure))
-                .setPositiveButton(getString(android.R.string.yes), dialogClickListener)
-                .setNegativeButton(getString(android.R.string.no), dialogClickListener)
-                .show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(getString(R.string.are_you_sure))
+                    .setPositiveButton(getString(android.R.string.yes), dialogClickListener)
+                    .setNegativeButton(getString(android.R.string.no), dialogClickListener)
+                    .show();
+        }else{
+            DialogInterface.OnClickListener dialogClickListener =
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int button) {
+                            if (button == DialogInterface.BUTTON_POSITIVE) {
+                                finish();
+                            }
+                        }
+                    };
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("The term you are trying to delete contains courses you will need to delete the courses first")
+                    .setPositiveButton(getString(android.R.string.yes), dialogClickListener)
+                    .show();
+        }
     }
 
     private void finishEditing() {
@@ -158,9 +191,8 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
                 } else {
                     updateNote(newName, newStart, newEnd);
                 }
+                break;
         }
-
-        finish();
     }
 
     private void updateNote(String termText, String startText, String endText) {
@@ -188,10 +220,8 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
 
     @Override
     public void onBackPressed() {
-
         finishEditing();
-
-
+        finish();
     }
 
     @Override
@@ -208,14 +238,14 @@ public class EditorActivity extends AppCompatActivity implements DatePickerDialo
     public void pickStart(View v) {
         DialogFragment datePicker = new DatePickerFragment();
         datePicker.show(getSupportFragmentManager(), "datePicker");
-        dateTarget = (EditText) findViewById(R.id.edit_start);
+        dateTarget = findViewById(R.id.edit_start);
 
     }
 
     public void pickEnd(View v) {
         DialogFragment datePicker = new DatePickerFragment();
         datePicker.show(getSupportFragmentManager(), "datePicker");
-        dateTarget = (EditText) findViewById(R.id.edit_end);
+        dateTarget = findViewById(R.id.edit_end);
 
     }
 }

@@ -2,7 +2,6 @@ package com.example.mobileapplicationdevelopment;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +13,6 @@ public class TermCursorAdapter extends CursorAdapter {
         super(context, c, flags);
     }
 
-    //todo add current term modification
-    //todo add more fields to the term_list_item
-
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         return LayoutInflater.from(context).inflate(R.layout.term_list_content, parent, false);
@@ -24,7 +20,6 @@ public class TermCursorAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        //todo need to add multible feilds check the context switch between tables
 
         String termId   = cursor.getColumnName(cursor.getColumnIndex(DBOpenHelper.TERM_ID));
         String termName = cursor.getString(cursor.getColumnIndex(DBOpenHelper.TERM_NAME));
@@ -36,14 +31,13 @@ public class TermCursorAdapter extends CursorAdapter {
         int pos = termName.indexOf(20);
         if (pos != -1) {
             termName = termName.substring(0, pos) + "...";
-            Log.d("db OVP termId", termId);
         }
-            TextView tv = (TextView) view.findViewById(R.id.tvTerm);
+            TextView tv = view.findViewById(R.id.tvTerm);
             tv.setText(termName);
 
-            TextView sd = (TextView) view.findViewById(R.id.term_start);
+            TextView sd = view.findViewById(R.id.term_start);
             sd.setText(termStart);
-            TextView ed = (TextView) view.findViewById(R.id.term_end);
+            TextView ed = view.findViewById(R.id.term_end);
             ed.setText(termEnd);
 
 

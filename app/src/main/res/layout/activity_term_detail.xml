@@ -62,26 +62,9 @@
                 android:text="end"
                 android:textColor="@color/header_text"
                 android:textSize="@dimen/text_size_md" />
+
         </RelativeLayout>
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/term_detail_fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_below="@id/dates"
-            android:layout_gravity="bottom|end"
-            android:layout_marginEnd="40dp"
-            android:layout_marginRight="40dp"
-            app:srcCompat="@drawable/ic_document_add" />/RelitiveLayout>
-
     </android.support.design.widget.AppBarLayout>
-
-    <!--todo remove hard coded text-->
-
-    <!--todo remove hard coded text-->
 
 
     <ListView

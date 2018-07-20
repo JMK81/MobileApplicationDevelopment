@@ -2,12 +2,10 @@ package com.example.mobileapplicationdevelopment;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
-import android.widget.EditText;
 import android.widget.TextView;
 
 public class AssessmentsCursorAdapter extends CursorAdapter {
@@ -18,7 +16,7 @@ public class AssessmentsCursorAdapter extends CursorAdapter {
     }
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        return LayoutInflater.from(context).inflate(R.layout.term_list_content, parent, false);
+        return LayoutInflater.from(context).inflate(R.layout.assessment_list_content, parent, false);
     }
 
 
@@ -28,23 +26,33 @@ public class AssessmentsCursorAdapter extends CursorAdapter {
         String assessmentTitle  = cursor.getString(cursor.getColumnIndex(DBOpenHelper.ASSESSMENT_TITLE));
         String assessmentDate = cursor.getString(cursor.getColumnIndex(DBOpenHelper.ASSESSMENT_DATE));
         String assessmentTime = cursor.getString(cursor.getColumnIndex(DBOpenHelper.ASSESSMENT_TIME));
-        //String assessmentNote = cursor.getString(cursor.getColumnIndex(DBOpenHelper.COURSE_END));
+        String assessmentType = cursor.getString(cursor.getColumnIndex(DBOpenHelper.ASSESSMENT_TYPE));
+        String assessmentNote = cursor.getString(cursor.getColumnIndex(DBOpenHelper.ASSESSMENT_NOTE));
 
 
         //a string longer then 10 will get ... added to the end
-        int pos = assessmentTitle.indexOf(20);
-        if (pos != -1) {
-            assessmentTitle = assessmentTitle.substring(0, pos) + "...";
+        int posTitle = assessmentTitle.indexOf(20);
+        if (posTitle != -1) {
+            assessmentTitle = assessmentTitle.substring(0, posTitle) + "...";
+        }
+        int posNote = assessmentNote.indexOf(30);
+        if(posNote != -1){
+            assessmentNote = assessmentNote.substring(0, posNote )+ " ...";
         }
 
 
-            //fixme need to add to xml files
-            TextView tv = (TextView) view.findViewById(R.id.tvTerm);
-            tv.setText(assessmentTitle);
-            TextView sd = (TextView) view.findViewById(R.id.term_start);
-            sd.setText(assessmentDate);
-            TextView ed = (TextView) view.findViewById(R.id.term_end);
-            ed.setText(assessmentTime);
+
+            TextView title = view.findViewById(R.id.assessment_content_title);
+            title.setText(assessmentTitle);
+                    //assessmentTitle);
+            TextView date = view.findViewById(R.id.assessment_content_item_date);
+            date.setText(assessmentDate);
+            TextView time = view.findViewById(R.id.assessment_content_item_time);
+            time.setText(assessmentTime);
+            TextView type = view.findViewById(R.id.assessment_content_item_type);
+            type.setText(assessmentType);
+            TextView note = view.findViewById(R.id.assessment_content_item_note);
+            note.setText(assessmentNote);
 
 
 

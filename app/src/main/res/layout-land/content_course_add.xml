@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".CourseAddActivity"
+    tools:showIn="@layout/activity_course_add">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/course_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_margin="20dp"
+                android:text="Course Name:" />
+
+            <EditText
+                android:id="@+id/course_input_name"
+                android:layout_width="173dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/course_name"
+                android:layout_below="@id/course_start"
+                android:layout_margin="@dimen/course_detail_margin"
+                android:layout_toEndOf="@id/course_name"
+                android:layout_toRightOf="@id/course_name"
+                android:inputType="text"
+                android:hint="Course Name"/>
+
+            <TextView
+                android:id="@+id/course_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/course_name"
+                android:layout_margin="@dimen/course_detail_margin"
+                android:text="Start Date" />
+
+            <EditText
+                android:id="@+id/course_input_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/course_start"
+                android:layout_below="@id/course_start"
+                android:layout_margin="@dimen/course_detail_margin"
+                android:layout_toEndOf="@id/course_start"
+                android:layout_toRightOf="@id/course_start"
+                android:inputType="textAutoComplete"
+                android:hint="Pick Start"/>
+
+            <ImageButton
+                android:id="@+id/addStart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/course_input_name"
+                android:layout_toRightOf="@id/course_input_start"
+                android:onClick="pickStart"
+                android:src="@drawable/ic_document_event"/>
+
+            <TextView
+                android:id="@+id/course_end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/course_name"
+                android:layout_toRightOf="@id/addStart"
+                android:layout_margin="@dimen/course_detail_margin"
+                android:text="Proposed End:" />
+
+            <EditText
+                android:id="@+id/course_input_end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/course_end"
+                android:layout_below="@id/course_name"
+                android:layout_margin="@dimen/course_detail_margin"
+                android:layout_toEndOf="@id/course_end"
+                android:layout_toRightOf="@id/course_end"
+                android:hint="Pick an End"/>
+
+            <ImageButton
+                android:id="@+id/addEnd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/course_input_end"
+                android:layout_toRightOf="@+id/course_input_end"
+                android:layout_margin="@dimen/course_detail_margin"
+                android:onClick="pickEnd"
+                android:src="@drawable/ic_document_event" />
+            <TextView
+                android:id="@+id/mentor_name"
+                android:layout_width="wrap_content"
+                android:layout_height="23dp"
+               android:layout_below="@id/course_input_end"
+                android:layout_margin="@dimen/course_detail_margin"
+                android:text="Mentor name:" />
+
+            <EditText
+                android:id="@+id/mentor_input_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/mentor_name"
+                android:layout_margin="@dimen/course_detail_margin"
+                android:layout_toEndOf="@id/mentor_name"
+                android:layout_toRightOf="@id/mentor_name"
+                android:inputType="text"
+                android:hint="Mentor Name"
+                />
+
+            <TextView
+                android:id="@+id/mentor_phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/mentor_name"
+                android:layout_margin="@dimen/course_detail_margin"
+                android:text="Phone" />
+
+            <EditText
+                android:id="@+id/mentor_input_phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/mentor_phone"
+                android:layout_below="@id/mentor_name"
+                android:layout_margin="@dimen/course_detail_margin"
+                android:layout_toEndOf="@id/mentor_phone"
+                android:layout_toRightOf="@id/mentor_phone"
+                android:inputType="phone"
+                android:hint="Mentor Phone"
+                />
+
+            <TextView
+                android:id="@+id/mentor_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/mentor_phone"
+                android:layout_margin="@dimen/course_detail_margin"
+                android:text="Mentor email" />
+
+            <EditText
+                android:id="@+id/mentor_input_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/mentor_email"
+                android:layout_below="@id/mentor_phone"
+                android:layout_margin="@dimen/course_detail_margin"
+                android:layout_toEndOf="@id/mentor_email"
+                android:layout_toRightOf="@id/mentor_email"
+                android:inputType="textEmailAddress"
+                android:hint="Mentor Email"
+                />
+            <TextView
+                android:id="@+id/course_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/mentor_input_email"
+                android:layout_margin="@dimen/course_detail_margin"
+                android:text="Course Status; " />
+
+            <EditText
+                android:id="@+id/course_input_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/course_status"
+                android:layout_below="@id/mentor_email"
+                android:layout_margin="@dimen/course_detail_margin"
+                android:layout_toEndOf="@id/course_status"
+                android:layout_toRightOf="@id/course_status"
+                android:hint="Dropped, plan to take, completed, in progress"
+          />
+            <TextView
+                android:id="@+id/course_note"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/course_status"
+                android:layout_marginTop="@dimen/text_margin"
+                android:layout_margin="@dimen/course_detail_margin"
+                android:text="Course Note: " />
+
+            <EditText
+                android:id="@+id/course_input_note"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/course_note"
+                android:layout_below="@id/course_item_status"
+                android:layout_margin="@dimen/course_detail_margin"
+                android:layout_marginTop="30dp"
+                android:layout_toRightOf="@id/course_note"
+                android:hint="Discribe goals that you have for the course"
+                />
+
+
+
+
+        </RelativeLayout>
+
+
+</android.support.constraint.ConstraintLayout>
+
+

@@ -6,23 +6,17 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.DateFormat;
@@ -39,6 +33,8 @@ public class CourseAddActivity extends AppCompatActivity implements DatePickerDi
     String oldEmail;
     String term;
     String courseId;
+    String oldStatus;
+    String oldNote;
 
     EditText editName;
     EditText editStart;
@@ -46,6 +42,8 @@ public class CourseAddActivity extends AppCompatActivity implements DatePickerDi
     EditText editMentor;
     EditText editEmail;
     EditText editPhone;
+    EditText editStatus;
+    EditText editNote;
     ImageButton addAssessmentsBtn;
 
     EditText dateTarget;
@@ -61,20 +59,23 @@ public class CourseAddActivity extends AppCompatActivity implements DatePickerDi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_add);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         Intent intent = getIntent();
         uriCourse = intent.getParcelableExtra(CourseViewProvider.COURSE_CONTENT_TYPE);
-        Log.d("db CAA uriCourse ", uriCourse + "line 69");
-        editName = (EditText) findViewById(R.id.course_input_name);
-        editStart = (EditText) findViewById(R.id.course_input_start);
-        editEnd = (EditText)findViewById(R.id.course_input_end);
-        editMentor = (EditText) findViewById(R.id.mentor_input_name);
-        editEmail = (EditText) findViewById(R.id.mentor_input_email);
-        editPhone = (EditText) findViewById(R.id.mentor_input_phone);
+        editName = findViewById(R.id.course_input_name);
+        editStart = findViewById(R.id.course_input_start);
+        editEnd = findViewById(R.id.course_input_end);
+        editMentor = findViewById(R.id.mentor_input_name);
+        editEmail = findViewById(R.id.mentor_input_email);
+        editPhone = findViewById(R.id.mentor_input_phone);
+        editStatus = findViewById(R.id.course_input_status);
+        editNote = findViewById(R.id.course_input_note);
 
-        addAssessmentsBtn = (ImageButton) findViewById(R.id.assessment_add_btn);
+        addAssessmentsBtn = findViewById(R.id.assessment_add_btn);
 
         //when CourseAddActivity is opened from term and dosnt have a course to add an assessment to
         if (uriCourse == null) {
@@ -88,6 +89,7 @@ public class CourseAddActivity extends AppCompatActivity implements DatePickerDi
             action = Intent.ACTION_EDIT;
 
             courseFilter = DBOpenHelper.COURSE_ID + " = " + uriCourse.getLastPathSegment();
+
             Cursor courseCursor = getContentResolver().query(uriCourse, DBOpenHelper.ALL_COURSE_COLUMNS, courseFilter,
                     null, null);
             if (courseCursor != null && courseCursor.getCount() > 0) {
@@ -101,6 +103,8 @@ public class CourseAddActivity extends AppCompatActivity implements DatePickerDi
                 oldEmail = courseCursor.getString(courseCursor.getColumnIndex(DBOpenHelper.MENTOR_EMAIL));
                 oldPhone = courseCursor.getString(courseCursor.getColumnIndex(DBOpenHelper.MENTOR_PHONE));
                 term = courseCursor.getString(courseCursor.getColumnIndex(DBOpenHelper.COURSE_TERM));
+                oldStatus = courseCursor.getString(courseCursor.getColumnIndex(DBOpenHelper.COURSE_STATUS));
+                oldNote = courseCursor.getString(courseCursor.getColumnIndex(DBOpenHelper.COURSE_NOTE));
 
                 setTitle("Edit " + oldName);
                 editName.setText(oldName);
@@ -109,20 +113,11 @@ public class CourseAddActivity extends AppCompatActivity implements DatePickerDi
                 editMentor.setText(oldMentor);
                 editEmail.setText(oldEmail);
                 editPhone.setText(oldPhone);
+                editStatus.setText(oldStatus);
+                editNote.setText(oldNote);
             }
         }
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, courseFilter + " " + uri, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-           getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -162,10 +157,12 @@ public class CourseAddActivity extends AppCompatActivity implements DatePickerDi
                         if (button == DialogInterface.BUTTON_POSITIVE) {
                             //db management
                             getContentResolver().delete(CourseViewProvider.COURSE_URI, courseFilter, null);
+                          /*  getContentResolver().delete(CourseViewProvider.COURSE_URI,
+                                    DBOpenHelper.ASSESSMENT_COURSE + " = " +uriCourse.getLastPathSegment(),
+                                    null);*/
                             setResult(RESULT_OK);
                             finish();
-                            //restartLoader();
-                            //delete assessments as well
+
                             Toast.makeText(CourseAddActivity.this,
                                     getString(R.string.all_deleted),
                                     Toast.LENGTH_SHORT).show();
@@ -183,7 +180,6 @@ public class CourseAddActivity extends AppCompatActivity implements DatePickerDi
                 .setNegativeButton(getString(android.R.string.no), dialogClickListener)
                 .show();
 
-                finish();
     }
 
     public void setStart(String s) {
@@ -194,24 +190,25 @@ public class CourseAddActivity extends AppCompatActivity implements DatePickerDi
         editEnd.setText(s);
     }
 
-    //todo start hear next
+
     private void finishEditing() {
         String newName = editName.getText().toString().trim();
         String newStart = editStart.getText().toString().trim();
         String newEnd = editEnd.getText().toString().trim();
         String newMentor = editMentor.getText().toString().trim();
-        String newEmail = editPhone.getText().toString().trim();
-        String newPhone = editEmail.getText().toString().trim();
+        String newPhone = editPhone.getText().toString().trim();
+        String newEmail = editEmail.getText().toString().trim();
+        String newStatus = editStatus.getText().toString().trim();
+        String newNote = editNote.getText().toString().trim();
         //checking there is a new term if a new term then inset into the db
         switch (action) {
             case Intent.ACTION_INSERT://
                 if (newName.length() == 0 && newStart.length() == 0 && newEnd.length() == 0
-                        && newMentor.length() == 0 && newPhone.length() == 0 && newEmail.length() == 0) {
+                        && newMentor.length() == 0 && newPhone.length() == 0 && newEmail.length() == 0
+                        && newStatus.length() == 0 && newNote.length() == 0) {
                     setResult(RESULT_CANCELED);
                 } else {
-                    Log.d("course add activity uri", uri.getPath());
-                    uriCourse = insertCourse(newName, newStart, newEnd, newMentor, newPhone, newEmail, term);
-                    Log.d("course add activity uri", uri.getPath());
+                    uriCourse = insertCourse(newName, newStart, newEnd, newMentor, newPhone, newEmail, term, newStatus, newNote);
                 }
                 break;
 
@@ -219,28 +216,28 @@ public class CourseAddActivity extends AppCompatActivity implements DatePickerDi
             case Intent.ACTION_EDIT:
                 //if all values are null the note will be deleted
                 if (newName.length() == 0 && newStart.length() == 0 && newEnd.length() == 0
-                        && newMentor.length() == 0 && newPhone.length() == 0 && newEmail.length() == 0) {
+                        && newMentor.length() == 0 && newPhone.length() == 0 && newEmail.length() == 0
+                        && newStatus.length() == 0 && newNote.length() == 0) {
                     deleteCourse();
                     //if true cancel return to list
                 } else if (newName.equals(oldName) && newStart.equals(oldStart) && newEnd.equals(oldEnd)
-                        && newMentor.equals(oldMentor) && newPhone.equals(oldPhone) && newEmail.equals(oldEmail)) {
-                    setResult(RESULT_CANCELED);
-                } else {
-                    updateCourse(newName, newStart, newEnd, newMentor, newPhone, newEmail, term);
+                        && newMentor.equals(oldMentor) && newPhone.equals(oldPhone) && newEmail.equals(oldEmail)
+                        && newStatus.equals(oldStatus) && newNote.equals(newNote)) {
 
+                    setResult(RESULT_CANCELED);
+                    finish();
+                } else {
+                    updateCourse(newName, newStart, newEnd, newMentor, newPhone, newEmail, term, newStatus, newNote);
                 }
+                break;
         }
-        //open term detail activity
-        Intent intent = new Intent(CourseAddActivity.this, CourseDetailActivity.class);
-        intent.putExtra(CourseViewProvider.COURSE_CONTENT_TYPE, uriCourse);
-        Log.d("caa uriCourse", uriCourse.getPath()+"line 235");
-        startActivityForResult(intent, COURSE_REQUEST_CODE);
+
         finish();
     }
 
     //needs to update the whole record
     private void updateCourse(String title, String start, String end, String mentor,
-                              String phone, String email, String term) {
+                              String phone, String email, String term, String status, String note) {
         ContentValues values = new ContentValues();
         values.put(DBOpenHelper.COURSE_TEXT, title);
         values.put(DBOpenHelper.COURSE__START, start);
@@ -249,6 +246,8 @@ public class CourseAddActivity extends AppCompatActivity implements DatePickerDi
         values.put(DBOpenHelper.MENTOR_PHONE, phone);
         values.put(DBOpenHelper.MENTOR_EMAIL, email);
         values.put(DBOpenHelper.COURSE_TERM, term);
+        values.put(DBOpenHelper.COURSE_STATUS, status);
+        values.put(DBOpenHelper.COURSE_NOTE, note);
 
         getContentResolver().update(CourseViewProvider.COURSE_URI, values, courseFilter, null);
         Toast.makeText(this, "Course has been updated", Toast.LENGTH_SHORT);
@@ -257,7 +256,7 @@ public class CourseAddActivity extends AppCompatActivity implements DatePickerDi
 
 
     private Uri insertCourse(String title, String start, String end, String mentor,
-                             String phone, String email, String term) {
+                             String phone, String email, String term, String status, String note) {
         ContentValues values = new ContentValues();
         values.put(DBOpenHelper.COURSE_TEXT, title);
         values.put(DBOpenHelper.COURSE__START, start);
@@ -266,6 +265,8 @@ public class CourseAddActivity extends AppCompatActivity implements DatePickerDi
         values.put(DBOpenHelper.MENTOR_PHONE, phone);
         values.put(DBOpenHelper.MENTOR_EMAIL, email);
         values.put(DBOpenHelper.COURSE_TERM, term);
+        values.put(DBOpenHelper.COURSE_STATUS, status);
+        values.put(DBOpenHelper.COURSE_NOTE, note);
         Uri i;
         i = getContentResolver().insert(CourseViewProvider.COURSE_URI, values);
         setResult(RESULT_OK);
@@ -273,12 +274,10 @@ public class CourseAddActivity extends AppCompatActivity implements DatePickerDi
 
     }
 
-//add intent to pass updated data to courseDetail activity
+    //add intent to pass updated data to courseDetail activity
     @Override
     public void onBackPressed() {
         finishEditing();
-
-
     }
 
     @Override
@@ -291,7 +290,7 @@ public class CourseAddActivity extends AppCompatActivity implements DatePickerDi
     public void pickStart(View v) {
         DialogFragment datePicker = new DatePickerFragment();
         datePicker.show(getSupportFragmentManager(), "datePicker");
-        dateTarget = (EditText) findViewById(R.id.course_input_start);
+        dateTarget = findViewById(R.id.course_input_start);
 
 
     }
@@ -299,7 +298,7 @@ public class CourseAddActivity extends AppCompatActivity implements DatePickerDi
     public void pickEnd(View v) {
         DialogFragment datePicker = new DatePickerFragment();
         datePicker.show(getSupportFragmentManager(), "datePicker");
-        dateTarget = (EditText) findViewById(R.id.course_input_end);
+        dateTarget = findViewById(R.id.course_input_end);
 
     }
 

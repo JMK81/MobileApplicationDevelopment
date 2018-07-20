@@ -46,10 +46,12 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     public static final String COURSE_MENTOR = "courseMentor";
     public static final String MENTOR_EMAIL = "mentorEmail";
     public static final String MENTOR_PHONE = "mentorPhone";
-
+    public static final String COURSE_STATUS ="courseStatus";
+    public static final String COURSE_NOTE = "courseNote";
 
     public static final String[] ALL_COURSE_COLUMNS = {COURSE_ID, COURSE_TEXT, COURSE__START,
-            COURSE_END, COURSE_TERM, COURSE_ASSESSMENTS, COURSE_MENTOR, MENTOR_EMAIL, MENTOR_PHONE};
+            COURSE_END, COURSE_TERM, COURSE_ASSESSMENTS, COURSE_MENTOR, MENTOR_EMAIL, MENTOR_PHONE,
+            COURSE_STATUS, COURSE_NOTE};
 
     //SQL to create table courses ** FOREIGN KEY(customer_id) REFERENCES customers(id),
     private static final String COURSE_TABLE_CREATE =
@@ -63,6 +65,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                     COURSE_MENTOR + " INTEGER, " +
                     MENTOR_EMAIL + " INTEGER, " +
                     MENTOR_PHONE + " INTEGER, " +
+                    COURSE_STATUS + " INTEGER, " +
+                    COURSE_NOTE + " TEXT, " +
                     "FOREIGN KEY (" + COURSE_TERM + ") REFERENCES " + TABLE_TERM + "(" + TERM_ID + ")" +
                     ")";
 
@@ -93,6 +97,22 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                     ASSESSMENT_NOTE + " TEXT, " +
                     "FOREIGN KEY(" + ASSESSMENT_COURSE + ") REFERENCES " + TABLE_COURSE + "(" + COURSE_ID + ")" +
                     ")";
+    public static final String TABLE_NOTIFICATION = "notifications";
+    public static final String NOTIFICATION_ID = "_id";
+    public static final String NOTIFICATION_MILLS = "mills";
+    public static final String NOTIFICATION_TITLE = "title";
+    public static final String NOTIFICATION_NOTE = "note";
+
+    public static final String[] ALL_NOTIFICATION_COLUMNS = {NOTIFICATION_MILLS + ", "
+            + NOTIFICATION_TITLE + ", " + NOTIFICATION_NOTE};
+
+    //SQL to create notification table
+    public static final String NOTIFICATION_TABLE_CREATE = "CREATE TABLE " + TABLE_NOTIFICATION + "(" +
+            NOTIFICATION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            NOTIFICATION_MILLS + " LONG, " +
+            NOTIFICATION_TITLE + " TEXT," +
+            NOTIFICATION_NOTE + " TEXT)";
+
 
     public DBOpenHelper(Context context) {
 
@@ -107,6 +127,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         db.execSQL(TERM_TABLE_CREATE);
         db.execSQL(COURSE_TABLE_CREATE);
         db.execSQL(ASSESSMENT_TABLE_CREATE);
+        db.execSQL(NOTIFICATION_TABLE_CREATE);
 
 
     }
@@ -118,6 +139,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ASSESSMENTS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_COURSE);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_TERM);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTIFICATION);
         onCreate(db);
     }
 }

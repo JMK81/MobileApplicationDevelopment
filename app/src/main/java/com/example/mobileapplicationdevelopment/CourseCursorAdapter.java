@@ -2,14 +2,11 @@ package com.example.mobileapplicationdevelopment;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
-
-import java.util.function.DoubleBinaryOperator;
 
 public class CourseCursorAdapter extends CursorAdapter {
 
@@ -21,7 +18,7 @@ public class CourseCursorAdapter extends CursorAdapter {
     String courseStart;
     String courseEnd;
     String courseText;
-    //String courseMentor;
+
 
 
     @Override
@@ -32,18 +29,22 @@ public class CourseCursorAdapter extends CursorAdapter {
     @Override                                       //cursor in the db term object
     public void bindView(View view, Context context, Cursor cursor) {
         //needs to target the course table
-        if(cursor.isNull(cursor.getColumnIndex(DBOpenHelper.COURSE_TERM)) ||
+        if (cursor.isNull(cursor.getColumnIndex(DBOpenHelper.COURSE_TERM)) ||
                 cursor.isNull(cursor.getColumnIndex(DBOpenHelper.COURSE__START)) ||
                 cursor.isNull(cursor.getColumnIndex(DBOpenHelper.COURSE_TEXT)) ||
-                cursor.isNull(cursor.getColumnIndex(DBOpenHelper.COURSE_END))){
-             courseText = "There in no course assigned to this term";
+                cursor.isNull(cursor.getColumnIndex(DBOpenHelper.COURSE_END))) {
+            courseText = "There in no course assigned to this term";
 
-        }else {
+        } else if (cursor.getCount() <= 0) {
+            courseText = "There is no courses assigned to this term";
+
+        } else {
             courseId = cursor.getString(cursor.getColumnIndex(DBOpenHelper.COURSE_ID));
             courseStart = cursor.getString(cursor.getColumnIndex(DBOpenHelper.COURSE__START));
             courseText = cursor.getString(cursor.getColumnIndex(DBOpenHelper.COURSE_TEXT));
             courseEnd = cursor.getString(cursor.getColumnIndex(DBOpenHelper.COURSE_END));
-            //courseMentor = cursor.getString(cursor.getColumnIndex(DBOpenHelper.MENTOR_NAME));
+
+
         }
 
         //a string longer then 10 will get ... added to the end
@@ -53,15 +54,14 @@ public class CourseCursorAdapter extends CursorAdapter {
         }
 
 
-        //fixme need to add to xml files
-        TextView tv = (TextView) view.findViewById(R.id.tvTerm);
+
+        TextView tv = view.findViewById(R.id.tvTerm);
         tv.setText(courseText);
-        TextView sd = (TextView) view.findViewById(R.id.term_start);
+        TextView sd = view.findViewById(R.id.term_start);
         sd.setText(courseStart);
-        TextView ed = (TextView) view.findViewById(R.id.term_end);
+        TextView ed = view.findViewById(R.id.term_end);
         ed.setText(courseEnd);
-        /*TextView cm = (TextView) view.findViewById(R.id.course_mentor);
-        cm.setText(courseMentor);*/
+
 
 
     }

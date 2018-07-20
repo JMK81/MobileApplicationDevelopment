@@ -6,22 +6,22 @@
     <item
         android:id="@+id/action_home"
         android:orderInCategory="100"
-        android:title="Home"
+        android:title="Terms"
         app:showAsAction="never" />
-    <item
-        android:id="@+id/action_reset"
-        android:orderInCategory="100"
-        android:title="Reset"
-        app:showAsAction="never"/>
     <item
         android:id="@+id/action_add"
         android:orderInCategory="100"
         android:title="Add"
         app:showAsAction="never"/>
     <item
-        android:id="@+id/action_cancel"
+        android:id="@+id/action_add_alarm"
         android:orderInCategory="100"
-        android:title="Cancel"
+        android:title="Add Alarm"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_edit"
+        android:orderInCategory="100"
+        android:title="Edit"
         app:showAsAction="never"/>
     <item
         android:id="@+id/action_delete"

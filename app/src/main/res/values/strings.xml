@@ -4,6 +4,7 @@
     <string name="start_date">Start Date:</string>
     <string name="delete">One Term was been deleted!</string>
     <string name="are_you_sure">Are you sure you would like to delete data</string>
+    <string name="note_to_email">"Would you like to add you Course note to your email"</string>
     <string name="title_activity_add_assessment">AddAssessment</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_course_add">CourseAddActivity</string>
@@ -21,8 +22,13 @@
     <string name="title_activity_view">ViewActivity</string>
     <string name="title_activity_editor">EditorActivity</string>
     <string name="action_delete">Delete</string>
-    <string name="title_activity_cource_add">CourceAddActivity</string>
     <string name="all_deleted">Course was deleted</string>
     <string name="edit">Edit</string>
     <string name="title_activity_assessment_detail">AssessmentDetailActivity</string>
+    <string name="assessments">Assessments:</string>
+    <string name="questions_about">Questions about </string>
+    <string name="channel_name">Alarm</string>
+    <string name="channel_description">Alarm for an activity</string>
+    <string name="title_activity_set_notivication">SetNotivication</string>
+    <string name="title_activity_note">Note</string>
 </resources>

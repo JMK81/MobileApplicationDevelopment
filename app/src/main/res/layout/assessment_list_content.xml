@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:gravity="center_vertical"
+android:padding="8dp">
+
+<ImageView
+    android:id="@+id/imageDocIcon"
+    android:layout_width="@dimen/icon_width"
+    android:layout_height="@dimen/icon_hight"
+    android:src="@drawable/ic_document" />
+
+
+<TextView
+    android:id="@+id/assessment_content_title"
+    android:layout_width="264dp"
+    android:layout_height="28dp"
+    android:layout_margin="@dimen/text_view_margin"
+    android:layout_toRightOf="@+id/imageDocIcon"
+    android:gravity="top"
+    android:singleLine="true"
+    android:text=""
+    android:textColor="@color/colorPrimaryDark"
+    android:textSize="@dimen/text_size_md" />
+
+<TextView
+    android:id="@+id/assessment_content_date"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/assessment_content_title"
+    android:layout_margin="@dimen/text_view_margin"
+    android:text="Date: "
+    android:textColor="@color/colorPrimaryDark"
+    android:textIsSelectable="false"
+    android:textSize="@dimen/text_size_md"/>
+
+<TextView
+    android:id="@+id/assessment_content_item_date"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_toRightOf="@id/assessment_content_date"
+    android:layout_below="@id/assessment_content_title"
+    android:layout_margin="@dimen/text_view_margin"
+    android:text="       "
+    android:textColor="@color/colorPrimaryDark"
+    android:textSize="@dimen/text_size_md"/>
+
+<TextView
+    android:id="@+id/assessment_content_time"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_toRightOf="@id/assessment_content_item_date"
+    android:layout_below="@+id/assessment_content_title"
+    android:layout_marginBottom="@dimen/text_view_margin"
+    android:layout_margin="@dimen/text_view_margin"
+    android:text="Time: "
+    android:textColor="@color/colorPrimaryDark"
+    android:textSize="@dimen/text_size_md" />
+
+<TextView
+    android:id="@+id/assessment_content_item_time"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_toRightOf="@id/assessment_content_time"
+    android:layout_below="@id/assessment_content_title"
+    android:layout_margin="@dimen/text_view_margin"
+    android:text=""
+    android:textColor="@color/colorPrimaryDark"
+    android:textSize="@dimen/text_size_md" />
+
+    <TextView
+    android:id="@+id/assessment_content_type"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/assessment_content_time"
+    android:layout_margin="@dimen/text_view_margin"
+    android:text="Type: "
+    android:textColor="@color/colorPrimaryDark"
+    android:textSize="@dimen/text_size_md" />
+
+<TextView
+    android:id="@+id/assessment_content_item_type"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentLeft="false"
+    android:layout_toRightOf="@+id/assessment_content_type"
+    android:layout_below="@+id/assessment_content_time"
+    android:layout_margin="@dimen/text_view_margin"
+    android:text=""
+    android:textColor="@color/colorPrimaryDark"
+    android:textSize="@dimen/text_size_md" />
+
+    <TextView
+        android:id="@+id/assessment_content_note"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/assessment_content_type"
+        android:layout_margin="@dimen/text_view_margin"
+        android:text="Note: "
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/text_size_md" />
+    <TextView
+        android:id="@+id/assessment_content_item_note"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/assessment_content_type"
+        android:layout_toRightOf="@+id/assessment_content_note"
+        android:layout_margin="@dimen/text_view_margin"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/text_size_md"/>
+
+
+
+</RelativeLayout>

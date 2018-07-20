@@ -9,13 +9,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.util.TimeFormatException;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,7 +23,6 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.text.DateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 
 public class AssessmentAddActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
@@ -40,6 +35,7 @@ public class AssessmentAddActivity extends AppCompatActivity implements DatePick
     String oldType;
     String courseId;
     String oldNote;
+    String TAG = "assessmentAddActivity";
 
     EditText editTitle;
     EditText editNote;
@@ -50,27 +46,31 @@ public class AssessmentAddActivity extends AppCompatActivity implements DatePick
 
     ImageButton addDate;
     ImageButton addTime;
+    private final int ASSESSMENT_REQUEST_CODE = 4004;
+    private final int COURSE_REQUEST_CODE = 3003;
+
+    Uri assessmentUri;
+    Uri uri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assessment_add);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
 
-        Uri uri = intent.getParcelableExtra(CourseViewProvider.COURSE_CONTENT_TYPE);
-        assessmentFilter = DBOpenHelper.ASSESSMENT_COURSE + " = " + courseId;
 
-        //checking if it is goind to add a new record or edit an exsiting one
+        editDate = findViewById(R.id.assessment_input_date);
+        editTime = findViewById(R.id.assessment_input_time);
+        editTitle = findViewById(R.id.assessment_input_title);
+        editNote = findViewById(R.id.assessment_input_note);
+        editType = findViewById(R.id.assessment_input_type);
 
-        editDate = (TextView) findViewById(R.id.assessment_input_date);
-        editTime = (TextView) findViewById(R.id.assessment_input_time);
-        editTitle = (EditText) findViewById(R.id.assessment_input_title);
-        editNote = (EditText) findViewById(R.id.assessment_input_note);
-        editType = (EditText) findViewById(R.id.assessment_input_type);
+        uri = intent.getParcelableExtra(CourseViewProvider.COURSE_CONTENT_TYPE);
 
         if (uri != null && uri.getPath().contains("course")) {//coming from CourseDetailActivity uri will have a "course" insert new record
             assessmentAction = Intent.ACTION_INSERT;
@@ -82,21 +82,21 @@ public class AssessmentAddActivity extends AppCompatActivity implements DatePick
             Cursor cursor = getContentResolver().query(uri, DBOpenHelper.ALL_ASSESSMENTS_COLUMNS, null,
                     null, null);
             cursor.moveToFirst();
-            oldTitle = (String) cursor.getString(cursor.getColumnIndex(DBOpenHelper.ASSESSMENT_TITLE));
+            oldTitle = cursor.getString(cursor.getColumnIndex(DBOpenHelper.ASSESSMENT_TITLE));
             setTitle("Edit:" + oldTitle);
             editTitle.setText(oldTitle);
-            oldDate = (String) cursor.getString(cursor.getColumnIndex(DBOpenHelper.ASSESSMENT_DATE));
+            oldDate = cursor.getString(cursor.getColumnIndex(DBOpenHelper.ASSESSMENT_DATE));
             editDate.setText(oldDate);
-            oldTime = (String) cursor.getString(cursor.getColumnIndex(DBOpenHelper.ASSESSMENT_TIME));
+            oldTime = cursor.getString(cursor.getColumnIndex(DBOpenHelper.ASSESSMENT_TIME));
             editTime.setText(oldTime);
-            oldType = (String) cursor.getString(cursor.getColumnIndex(DBOpenHelper.ASSESSMENT_TYPE));
+            oldType = cursor.getString(cursor.getColumnIndex(DBOpenHelper.ASSESSMENT_TYPE));
             editType.setText(oldType);
-            oldNote = (String) cursor.getString(cursor.getColumnIndex(DBOpenHelper.ASSESSMENT_NOTE));
+            oldNote = cursor.getString(cursor.getColumnIndex(DBOpenHelper.ASSESSMENT_NOTE));
             editNote.setText(oldNote);
-            courseId = (String) cursor.getString(cursor.getColumnIndex(DBOpenHelper.ASSESSMENT_COURSE));
+            courseId = cursor.getString(cursor.getColumnIndex(DBOpenHelper.ASSESSMENT_COURSE));
 
         }
-            addDate = (ImageButton) findViewById(R.id.assessment_add_date);
+            addDate = findViewById(R.id.assessment_add_date);
             addDate.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View view){
@@ -104,20 +104,12 @@ public class AssessmentAddActivity extends AppCompatActivity implements DatePick
                     datePicker.show(getSupportFragmentManager(), "datePicker");
                 }
             });
-        addTime = (ImageButton) findViewById(R.id.assessment_add_time);
+        addTime = findViewById(R.id.assessment_add_time);
         addTime.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
                 DialogFragment timePicker = new TimePickerFragment();
                 timePicker.show(getSupportFragmentManager(), "timePicker");
-            }
-        });
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, courseId + " Hello Course", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
             }
         });
 
@@ -127,10 +119,10 @@ public class AssessmentAddActivity extends AppCompatActivity implements DatePick
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         if (assessmentAction.equals(Intent.ACTION_EDIT)) {
-            getMenuInflater().inflate(R.menu.menu_delete, menu);
             getMenuInflater().inflate(R.menu.menu_edit, menu);
+        }else {
+            getMenuInflater().inflate(R.menu.menu_add, menu);
         }
-        getMenuInflater().inflate(R.menu.menu_add, menu);
         return true;
     }
 
@@ -146,9 +138,6 @@ public class AssessmentAddActivity extends AppCompatActivity implements DatePick
                 break;
             case R.id.action_edit:
                 finishEditing();
-                break;
-            case R.id.action_delete:
-                deleteAssessment();
                 break;
         }
         return true;
@@ -192,15 +181,13 @@ public void pickTime(View v){
         String type = editType.getText().toString().trim();
         String note = editNote.getText().toString().trim();
 
-        Log.d("db assessmentAdd", title+ ", " + date + ", " + time + ", " + type+ ", " + note+", "+courseId);
-        //todo add assessment type
         switch (assessmentAction) {
             case Intent.ACTION_INSERT:
                 if (title.length() == 0 && date.length() == 0 && time.length() == 0 && type.length() == 0
                         && note.length() == 0) {
                     setResult(RESULT_CANCELED);
                 }else {
-                    insertAssessment(title, date, time, type, note, courseId);
+                    assessmentUri = insertAssessment(title, date, time, type, note, courseId);
                 }
                 break;
             case Intent.ACTION_EDIT:
@@ -212,9 +199,10 @@ public void pickTime(View v){
                     setResult(RESULT_CANCELED);
                 } else {
                     updateAssessment(title, date, time, type, note, courseId);
+
                 }
         }
-        finish();
+finish();
     }
 
     private void deleteAssessment() {
@@ -224,7 +212,6 @@ public void pickTime(View v){
                     public void onClick(DialogInterface dialog, int button) {
                         if (button == DialogInterface.BUTTON_POSITIVE) {
                             //db management
-
                             getContentResolver().delete(AssessmentViewProvider.ASSESSMENT_URI, assessmentFilter, null);
                             setResult(RESULT_OK);
                             finish();
@@ -257,10 +244,9 @@ public void pickTime(View v){
         getContentResolver().update(AssessmentViewProvider.ASSESSMENT_URI, values, assessmentFilter, null);
         setResult(RESULT_OK);
     }
-    private void updateNote(){}
 
 
-    private void insertAssessment(String title, String date, String time, String type, String note, String courseId) {
+    private Uri insertAssessment(String title, String date, String time, String type, String note, String courseId) {
         ContentValues values = new ContentValues();
         values.put(DBOpenHelper.ASSESSMENT_TITLE, title);
         values.put(DBOpenHelper.ASSESSMENT_DATE, date);
@@ -268,16 +254,19 @@ public void pickTime(View v){
         values.put(DBOpenHelper.ASSESSMENT_TYPE, type);
         values.put(DBOpenHelper.ASSESSMENT_NOTE, note);
         values.put(DBOpenHelper.ASSESSMENT_COURSE, courseId);
-        getContentResolver().insert(AssessmentViewProvider.ASSESSMENT_URI, values);
+        Uri uri = getContentResolver().insert(AssessmentViewProvider.ASSESSMENT_URI, values);
         setResult(RESULT_OK);
+        return uri;
     }
 
 
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         finishEditing();
-        }
+
+    }
 
 
 }

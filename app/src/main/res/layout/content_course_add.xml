@@ -26,7 +26,6 @@
                 android:layout_width="173dp"
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@id/course_name"
-                android:layout_below="@id/course_start"
                 android:layout_marginBottom="20dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginLeft="20dp"
@@ -35,7 +34,8 @@
                 android:layout_marginTop="20dp"
                 android:layout_toEndOf="@id/course_name"
                 android:layout_toRightOf="@id/course_name"
-                android:inputType="text" />
+                android:inputType="text"
+                android:hint="Course Name"/>
 
             <TextView
                 android:id="@+id/course_start"
@@ -55,16 +55,16 @@
                 android:layout_margin="10dp"
                 android:layout_toEndOf="@id/course_start"
                 android:layout_toRightOf="@id/course_start"
-                android:inputType="textAutoComplete" />
+                android:hint="Pick Date" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/addStart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignBaseline="@+id/course_start"
+                android:layout_toRightOf="@id/course_input_start"
+                android:layout_below="@id/course_input_name"
                 android:onClick="pickStart"
-                android:text="Add Start Date" />
+                android:src="@drawable/ic_document_event" />
 
             <TextView
                 android:id="@+id/course_end"
@@ -80,20 +80,18 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@id/course_end"
                 android:layout_below="@id/course_start"
-                android:layout_margin="10dp"
                 android:layout_toEndOf="@id/course_end"
                 android:layout_toRightOf="@id/course_end"
-                android:inputType="textAutoComplete" />
+                android:hint="Pick Date"/>
 
-            <Button
+            <ImageButton
                 android:id="@+id/addEnd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignTop="@+id/course_input_end"
-                android:layout_margin="10dp"
+                android:layout_below="@id/course_input_start"
+                android:layout_toRightOf="@+id/course_input_end"
                 android:onClick="pickEnd"
-                android:text="Add End Date" />
+                android:src="@drawable/ic_document_event" />
 
             <TextView
                 android:id="@+id/mentor_name"
@@ -112,6 +110,7 @@
                 android:layout_toEndOf="@id/mentor_name"
                 android:layout_toRightOf="@id/mentor_name"
                 android:inputType="text"
+                android:hint="Mentor Name"
                 />
 
             <TextView
@@ -132,6 +131,7 @@
                 android:layout_toEndOf="@id/mentor_phone"
                 android:layout_toRightOf="@id/mentor_phone"
                 android:inputType="phone"
+                android:hint="Mentor Phone"
                 />
 
             <TextView
@@ -152,14 +152,47 @@
                 android:layout_toEndOf="@id/mentor_email"
                 android:layout_toRightOf="@id/mentor_email"
                 android:inputType="textEmailAddress"
+                android:hint="Mentor Email"
                 />
             <TextView
-                android:id="@+id/assessment"
+                android:id="@+id/course_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/mentor_input_email"
+                android:layout_margin="@dimen/detail_margin"
+                android:text="Course Status: " />
+
+            <EditText
+                android:id="@+id/course_input_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/course_status"
                 android:layout_below="@id/mentor_email"
-                android:layout_margin="10dp"
-                android:text="Assessments: " />
+                android:layout_margin="@dimen/detail_margin"
+                android:layout_toEndOf="@id/course_status"
+                android:layout_toRightOf="@id/course_status"
+                android:hint="Dropped, plan to take, completed, in progress"
+          />
+            <TextView
+                android:id="@+id/course_note"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/course_status"
+                android:layout_marginTop="@dimen/text_margin"
+                android:layout_margin="@dimen/detail_margin"
+                android:text="Course Note: " />
+
+            <EditText
+                android:id="@+id/course_input_note"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/course_note"
+                android:layout_below="@id/course_item_status"
+                android:layout_margin="@dimen/detail_margin"
+                android:layout_marginTop="30dp"
+                android:layout_toRightOf="@id/course_note"
+                android:hint="Discribe goals that you have for the course"
+                />
 
 
 
